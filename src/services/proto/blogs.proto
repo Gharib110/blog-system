@@ -1,0 +1,22 @@
+syntax="proto3";
+// protoc -I=src/services/proto --go_out=plugins=grpc:src/ src/services/proto/blogs.proto
+package blog;
+
+option go_package="services/pb";
+
+message Author {
+  string id=1;
+  string name=2;
+  string career=3;
+}
+
+message Blog {
+  string id=1;
+  string author_id=2;
+  string title=3;
+  string content=4;
+}
+
+service BlogSystem {
+
+}
