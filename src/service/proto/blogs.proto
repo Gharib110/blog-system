@@ -1,8 +1,8 @@
 syntax="proto3";
-// protoc -I=src/services/proto --go_out=plugins=grpc:src/ src/services/proto/blogs.proto
+// protoc -I=src/service/proto --go_out=plugins=grpc:src/ src/service/proto/blogs.proto
 package blog;
 
-option go_package="services/pb";
+option go_package="service/pb";
 
 message Author {
   string id=1;
