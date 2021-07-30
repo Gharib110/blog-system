@@ -41,9 +41,17 @@ func runServer() error {
 			zerolog.Fatal().Msg(err.Error() + "; Occurred in serving on :50051")
 			return
 		}
+
 	}()
 
 	<-sigChan
+
+	srv.Stop()
+	err = listener.Close()
+	if err != nil {
+		zerolog.Error().Msg(err.Error())
+		return err
+	}
 
 	zerolog.Log().Msg("Blog Server was interrupted.")
 	return nil
