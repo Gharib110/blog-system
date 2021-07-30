@@ -26,12 +26,20 @@ func runServer() error {
 		zerolog.Error().Msg(err.Error() + "; Occurred in listening to :50051")
 		return err
 	}
+	defer func(listener net.Listener) {
+		err = listener.Close()
+		if err != nil {
+
+		}
+	}(listener)
 
 	// Use signal pkg for interrupting our server with CTRL+C
 	sigChan := make(chan os.Signal, 1)
 	signal.Notify(sigChan, os.Interrupt)
 
 	srv := grpc.NewServer()
+	defer srv.Stop()
+
 	pb.RegisterBlogSystemServer(srv, &BlogSystem{})
 
 	go func() {
@@ -45,13 +53,6 @@ func runServer() error {
 	}()
 
 	<-sigChan
-
-	srv.Stop()
-	err = listener.Close()
-	if err != nil {
-		zerolog.Error().Msg(err.Error())
-		return err
-	}
 
 	zerolog.Log().Msg("Blog Server was interrupted.")
 	return nil
