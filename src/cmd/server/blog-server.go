@@ -14,14 +14,11 @@ import (
 	"os"
 	"os/signal"
 	"sync"
-	"time"
 )
 
 type Config struct {
 	MongoDB    *db.MDatabase
-	ErrChan    chan error
 	SignalChan chan error
-	errMutex   *sync.Mutex
 	sigMutex   *sync.Mutex
 	okChan     chan bool
 	okMutex    *sync.Mutex
@@ -36,22 +33,9 @@ func (b BlogSystem) CreateBlog(ctx context.Context, r *pb.CreateBlogRequest) (*p
 	var respBlog *pb.CreateBlogResponse
 
 	go func() {
-		for {
-			select {
-			case <-ctx.Done():
-				aC.errMutex.Lock()
-				aC.ErrChan <- ctx.Err()
-				aC.errMutex.Unlock()
-				break
-			}
-			return
-		}
-	}()
-
-	go func() {
 		tBlog := r.GetBlog()
 		blog := &db.BlogItem{
-			ID:       bson.NewObjectIdWithTime(time.Now()),
+			ID:       bson.NewObjectId(),
 			AuthorID: tBlog.AuthorId,
 			Content:  tBlog.Content,
 			Title:    tBlog.Title,
@@ -66,7 +50,7 @@ func (b BlogSystem) CreateBlog(ctx context.Context, r *pb.CreateBlogRequest) (*p
 		}
 
 		respBlog = &pb.CreateBlogResponse{Blog: &pb.Blog{
-			Id:       string(blog.ID),
+			Id:       blog.ID.Hex(),
 			AuthorId: blog.AuthorID,
 			Title:    blog.Title,
 			Content:  blog.Content,
@@ -79,7 +63,8 @@ func (b BlogSystem) CreateBlog(ctx context.Context, r *pb.CreateBlogRequest) (*p
 	}()
 
 	select {
-	case err := <-aC.ErrChan:
+	case <-ctx.Done():
+		err := ctx.Err()
 		return nil, status.Error(status.Code(err), err.Error())
 	case err := <-aC.SignalChan:
 		return nil, err
@@ -124,9 +109,7 @@ func runServer() error {
 			Mdb:          nil,
 			MCollections: make(map[string]*mgo.Collection),
 		},
-		ErrChan:    make(chan error, 10),
 		SignalChan: make(chan error, 10),
-		errMutex:   &sync.Mutex{},
 		sigMutex:   &sync.Mutex{},
 		okChan:     make(chan bool, 10),
 		okMutex:    &sync.Mutex{},
@@ -140,8 +123,8 @@ func runServer() error {
 	aC.MongoDB.AddDatabase("blog_system")
 	aC.MongoDB.AddCollection("blogs")
 	aC.MongoDB.AddCollection("authors")
-	aC.MongoDB.MSession.Close()
-	aC.MongoDB.Mdb.Logout()
+	defer aC.MongoDB.MSession.Close()
+	defer aC.MongoDB.Mdb.Logout()
 
 	go func() {
 		zerolog.Print("Blog gRPC server is listening on localhost:50051 ...")

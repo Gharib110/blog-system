@@ -11,26 +11,20 @@ import (
 )
 
 func main() {
-	BlogClient, err := createClient()
+	err := createClient()
 	if err != nil {
 		zerolog.Fatal().Msg(err.Error())
-		return
-	}
-
-	err = createBlog(BlogClient)
-	if err != nil {
-		zerolog.Error().Msg(err.Error())
 		return
 	}
 
 	return
 }
 
-func createClient() (pb.BlogSystemClient, error) {
-	Conn, err := grpc.Dial("localhost:50051")
+func createClient() error {
+	Conn, err := grpc.Dial("localhost:50051", grpc.WithInsecure())
 	if err != nil {
 		zerolog.Fatal().Msg(err.Error())
-		return nil, status.Error(status.Code(err), err.Error())
+		return err
 	}
 	defer func(Conn *grpc.ClientConn) {
 		err = Conn.Close()
@@ -42,25 +36,22 @@ func createClient() (pb.BlogSystemClient, error) {
 
 	blogClient := pb.NewBlogSystemClient(Conn)
 
-	return blogClient, nil
-}
-
-func createBlog(c pb.BlogSystemClient) error {
-	ctx, cancel := context.WithTimeout(context.Background(), time.Second*10)
-	defer cancel()
-
 	blog := &pb.CreateBlogRequest{Blog: &pb.Blog{
 		AuthorId: "",
-		Title:    "",
-		Content:  "",
+		Title:    "Hello Johnny",
+		Content:  "Hey Johnny, you are so fast and reliable !\nGood Job",
 	}}
 
-	resp, err := c.CreateBlog(ctx, blog)
-	if err != nil {
-		zerolog.Error().Msg(err.Error())
+	ctx, cancel := context.WithTimeout(context.Background(), time.Second*10)
+	defer cancel()
+	resp, err := blogClient.CreateBlog(ctx, blog)
+	respErr, ok := status.FromError(err)
+	if !ok {
+		zerolog.Error().Msg(respErr.Code().String() + respErr.Err().Error())
 		return err
 	}
 
 	fmt.Println(resp)
-	return err
+
+	return nil
 }
