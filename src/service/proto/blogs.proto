@@ -17,6 +17,14 @@ message Blog {
   string content=4;
 }
 
-service BlogSystem {
+message CreateBlogRequest {
+  Blog blog=1;
+}
 
+message CreateBlogResponse {
+  Blog blog=1;
+}
+
+service BlogSystem {
+  rpc CreateBlog(CreateBlogRequest) returns (CreateBlogResponse) {};
 }

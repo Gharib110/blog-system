@@ -1,23 +1,91 @@
 package main
 
 import (
+	"context"
 	"github.com/DapperBlondie/blog-system/src/cmd/server/db"
 	"github.com/DapperBlondie/blog-system/src/service/pb"
 	zerolog "github.com/rs/zerolog/log"
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
 	"gopkg.in/mgo.v2"
+	"gopkg.in/mgo.v2/bson"
 	"net"
 	"os"
 	"os/signal"
+	"sync"
+	"time"
 )
 
 type Config struct {
-	MongoDB *db.MDatabase
+	MongoDB    *db.MDatabase
+	ErrChan    chan error
+	SignalChan chan error
+	errMutex   *sync.Mutex
+	sigMutex   *sync.Mutex
+	okChan     chan bool
+	okMutex    *sync.Mutex
 }
 
 var aC *Config
 
 type BlogSystem struct {
+}
+
+func (b BlogSystem) CreateBlog(ctx context.Context, r *pb.CreateBlogRequest) (*pb.CreateBlogResponse, error) {
+	var respBlog *pb.CreateBlogResponse
+
+	go func() {
+		for {
+			select {
+			case <-ctx.Done():
+				aC.errMutex.Lock()
+				aC.ErrChan <- ctx.Err()
+				aC.errMutex.Unlock()
+				break
+			}
+			return
+		}
+	}()
+
+	go func() {
+		tBlog := r.GetBlog()
+		blog := &db.BlogItem{
+			ID:       bson.NewObjectIdWithTime(time.Now()),
+			AuthorID: tBlog.AuthorId,
+			Content:  tBlog.Content,
+			Title:    tBlog.Title,
+		}
+
+		err := aC.MongoDB.MCollections["blogs"].Insert(blog)
+		if err != nil {
+			zerolog.Error().Msg(err.Error())
+			aC.sigMutex.Lock()
+			aC.SignalChan <- status.Error(codes.Internal, err.Error())
+			aC.sigMutex.Unlock()
+		}
+
+		respBlog = &pb.CreateBlogResponse{Blog: &pb.Blog{
+			Id:       string(blog.ID),
+			AuthorId: blog.AuthorID,
+			Title:    blog.Title,
+			Content:  blog.Content,
+		}}
+
+		aC.okMutex.Lock()
+		aC.okChan <- true
+		aC.okMutex.Unlock()
+		return
+	}()
+
+	select {
+	case err := <-aC.ErrChan:
+		return nil, status.Error(status.Code(err), err.Error())
+	case err := <-aC.SignalChan:
+		return nil, err
+	case <-aC.okChan:
+		return respBlog, nil
+	}
 }
 
 func main() {
@@ -50,11 +118,19 @@ func runServer() error {
 
 	pb.RegisterBlogSystemServer(srv, &BlogSystem{})
 
-	aC = &Config{MongoDB: &db.MDatabase{
-		MSession:     nil,
-		Mdb:          nil,
-		MCollections: make(map[string]*mgo.Collection),
-	}}
+	aC = &Config{
+		MongoDB: &db.MDatabase{
+			MSession:     nil,
+			Mdb:          nil,
+			MCollections: make(map[string]*mgo.Collection),
+		},
+		ErrChan:    make(chan error, 10),
+		SignalChan: make(chan error, 10),
+		errMutex:   &sync.Mutex{},
+		sigMutex:   &sync.Mutex{},
+		okChan:     make(chan bool, 10),
+		okMutex:    &sync.Mutex{},
+	}
 
 	aC.MongoDB.MSession, err = db.NewSession("localhost:27017")
 	if err != nil {
@@ -63,6 +139,9 @@ func runServer() error {
 	}
 	aC.MongoDB.AddDatabase("blog_system")
 	aC.MongoDB.AddCollection("blogs")
+	aC.MongoDB.AddCollection("authors")
+	aC.MongoDB.MSession.Close()
+	aC.MongoDB.Mdb.Logout()
 
 	go func() {
 		zerolog.Print("Blog gRPC server is listening on localhost:50051 ...")
