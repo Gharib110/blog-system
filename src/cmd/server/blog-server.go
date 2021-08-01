@@ -15,7 +15,7 @@ import (
 	"os/signal"
 	"sync"
 )
-
+// Config use for holding the gRPC server configuration objects
 type Config struct {
 	MongoDB    *db.MDatabase
 	SignalChan chan error
@@ -26,9 +26,9 @@ type Config struct {
 
 var aC *Config
 
-type BlogSystem struct {
-}
+type BlogSystem struct {}
 
+// ReadBlog use for reading a blog with its ID
 func (b BlogSystem) ReadBlog(ctx context.Context, r *pb.ReadBlogRequest) (*pb.ReadBlogResponse, error) {
 	var respBlog *pb.ReadBlogResponse
 	var blogItem *db.BlogItem
