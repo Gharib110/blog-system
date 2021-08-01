@@ -29,6 +29,41 @@ var aC *Config
 type BlogSystem struct {
 }
 
+func (b BlogSystem) ReadBlog(ctx context.Context, r *pb.ReadBlogRequest) (*pb.ReadBlogResponse, error) {
+	var respBlog *pb.ReadBlogResponse
+	var blogItem *db.BlogItem
+
+	go func() {
+		err := aC.MongoDB.MCollections["blogs"].Find(bson.M{"_id": bson.ObjectIdHex(r.GetBlogId())}).One(&blogItem)
+		if err != nil {
+			aC.sigMutex.Lock()
+			aC.SignalChan <- status.Error(codes.Unavailable, err.Error())
+			aC.sigMutex.Unlock()
+			return
+		}
+		respBlog = &pb.ReadBlogResponse{Blog: &pb.Blog{
+			Id:       blogItem.ID.Hex(),
+			AuthorId: blogItem.AuthorID,
+			Title:    blogItem.Title,
+			Content:  blogItem.Content,
+		}}
+		aC.okMutex.Lock()
+		aC.okChan <- true
+		aC.okMutex.Unlock()
+	}()
+
+	select {
+	case <-ctx.Done():
+		err := ctx.Err()
+		return nil, status.Error(status.Code(err), err.Error())
+	case err := <-aC.SignalChan:
+		return nil, status.Error(status.Code(err), err.Error())
+	case <-aC.okChan:
+		return respBlog, nil
+	}
+}
+
+// CreateBlog use for creating blog
 func (b BlogSystem) CreateBlog(ctx context.Context, r *pb.CreateBlogRequest) (*pb.CreateBlogResponse, error) {
 	var respBlog *pb.CreateBlogResponse
 
@@ -123,6 +158,7 @@ func runServer() error {
 	aC.MongoDB.AddDatabase("blog_system")
 	aC.MongoDB.AddCollection("blogs")
 	aC.MongoDB.AddCollection("authors")
+
 	defer aC.MongoDB.MSession.Close()
 	defer aC.MongoDB.Mdb.Logout()
 

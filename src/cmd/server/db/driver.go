@@ -4,7 +4,6 @@ import (
 	zerolog "github.com/rs/zerolog/log"
 	mgo "gopkg.in/mgo.v2"
 	"gopkg.in/mgo.v2/bson"
-	"time"
 )
 
 // MDatabase use it when you just have one Database and multiple collections
@@ -38,10 +37,10 @@ func (m *MDatabase) AddCollection(cname string) {
 	m.MCollections[cname] = m.Mdb.C(cname)
 }
 
-// tempAuthorCreator just hard coding for adding two authors
-func (m *MDatabase) tempAuthorCreator() {
+// TempAuthorCreator just hard coding for adding two authors
+func (m *MDatabase) TempAuthorCreator() {
 	err := m.MCollections["authors"].Insert(&Author{
-		ID:     bson.NewObjectIdWithTime(time.Now()),
+		ID:     bson.NewObjectId(),
 		Name:   "Dapper",
 		Career: "Developer",
 	})
@@ -51,7 +50,7 @@ func (m *MDatabase) tempAuthorCreator() {
 	}
 
 	err = m.MCollections["authors"].Insert(&Author{
-		ID:     bson.NewObjectIdWithTime(time.Now()),
+		ID:     bson.NewObjectId(),
 		Name:   "V",
 		Career: "Mercenary Outlaw",
 	})
