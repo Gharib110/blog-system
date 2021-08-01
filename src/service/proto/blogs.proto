@@ -33,7 +33,16 @@ message ReadBlogResponse{
   Blog blog=1;
 }
 
+message UpdateBlogRequest {
+  Blog blog=1;
+}
+
+message UpdateBlogResponse {
+  Blog blog=1;
+}
+
 service BlogSystem {
   rpc CreateBlog(CreateBlogRequest) returns (CreateBlogResponse) {};
   rpc ReadBlog(ReadBlogRequest) returns (ReadBlogResponse) {};
+  rpc UpdateBlog(UpdateBlogRequest) returns (UpdateBlogResponse) {};
 }

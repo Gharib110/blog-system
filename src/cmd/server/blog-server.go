@@ -15,6 +15,7 @@ import (
 	"os/signal"
 	"sync"
 )
+
 // Config use for holding the gRPC server configuration objects
 type Config struct {
 	MongoDB    *db.MDatabase
@@ -26,7 +27,55 @@ type Config struct {
 
 var aC *Config
 
-type BlogSystem struct {}
+type BlogSystem struct{}
+
+func (b BlogSystem) UpdateBlog(ctx context.Context, r *pb.UpdateBlogRequest) (*pb.UpdateBlogResponse, error) {
+	var respBlog *pb.UpdateBlogResponse
+	var blogItem *db.BlogItem
+
+	go func() {
+		err := aC.MongoDB.MCollections["blogs"].Find(bson.M{"_id": bson.ObjectIdHex(r.GetBlog().GetId())}).One(&blogItem)
+		if err != nil {
+			zerolog.Error().Msg(err.Error())
+			aC.SignalChan <- status.Error(codes.Unavailable, err.Error())
+
+			return
+		}
+
+		blogItem.ID = bson.ObjectIdHex(r.GetBlog().GetId())
+		blogItem.Title = r.GetBlog().GetTitle()
+		blogItem.Content = r.GetBlog().GetContent()
+		blogItem.AuthorID = r.GetBlog().GetAuthorId()
+
+		aC.sigMutex.Lock()
+		err = aC.MongoDB.MCollections["blogs"].UpdateId(bson.M{"_id": bson.ObjectIdHex(r.GetBlog().GetId())}, blogItem)
+		aC.sigMutex.Unlock()
+
+		if err != nil {
+			zerolog.Error().Msg(err.Error())
+			aC.SignalChan <- status.Error(codes.Internal, err.Error())
+			return
+		}
+
+		aC.okChan <- true
+	}()
+
+	select {
+	case <-ctx.Done():
+		err := ctx.Err()
+		return nil, status.Error(status.Code(err), err.Error())
+	case err := <-aC.SignalChan:
+		return nil, status.Error(status.Code(err), err.Error())
+	case <-aC.okChan:
+		respBlog = &pb.UpdateBlogResponse{Blog: &pb.Blog{
+			Id:       blogItem.ID.Hex(),
+			AuthorId: blogItem.AuthorID,
+			Title:    blogItem.Title,
+			Content:  blogItem.Content,
+		}}
+		return respBlog, nil
+	}
+}
 
 // ReadBlog use for reading a blog with its ID
 func (b BlogSystem) ReadBlog(ctx context.Context, r *pb.ReadBlogRequest) (*pb.ReadBlogResponse, error) {
@@ -36,9 +85,9 @@ func (b BlogSystem) ReadBlog(ctx context.Context, r *pb.ReadBlogRequest) (*pb.Re
 	go func() {
 		err := aC.MongoDB.MCollections["blogs"].Find(bson.M{"_id": bson.ObjectIdHex(r.GetBlogId())}).One(&blogItem)
 		if err != nil {
-			aC.sigMutex.Lock()
+			zerolog.Error().Msg(err.Error())
 			aC.SignalChan <- status.Error(codes.Unavailable, err.Error())
-			aC.sigMutex.Unlock()
+
 			return
 		}
 		respBlog = &pb.ReadBlogResponse{Blog: &pb.Blog{
@@ -47,9 +96,9 @@ func (b BlogSystem) ReadBlog(ctx context.Context, r *pb.ReadBlogRequest) (*pb.Re
 			Title:    blogItem.Title,
 			Content:  blogItem.Content,
 		}}
-		aC.okMutex.Lock()
+
 		aC.okChan <- true
-		aC.okMutex.Unlock()
+		return
 	}()
 
 	select {
@@ -79,9 +128,9 @@ func (b BlogSystem) CreateBlog(ctx context.Context, r *pb.CreateBlogRequest) (*p
 		err := aC.MongoDB.MCollections["blogs"].Insert(blog)
 		if err != nil {
 			zerolog.Error().Msg(err.Error())
-			aC.sigMutex.Lock()
 			aC.SignalChan <- status.Error(codes.Internal, err.Error())
-			aC.sigMutex.Unlock()
+
+			return
 		}
 
 		respBlog = &pb.CreateBlogResponse{Blog: &pb.Blog{
@@ -91,9 +140,8 @@ func (b BlogSystem) CreateBlog(ctx context.Context, r *pb.CreateBlogRequest) (*p
 			Content:  blog.Content,
 		}}
 
-		aC.okMutex.Lock()
 		aC.okChan <- true
-		aC.okMutex.Unlock()
+
 		return
 	}()
 
