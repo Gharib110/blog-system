@@ -4,15 +4,12 @@ import (
 	"encoding/json"
 	"github.com/DapperBlondie/blog-system/src/cmd/client/models"
 	zerolog "github.com/rs/zerolog/log"
-	"gopkg.in/mgo.v2"
 	"net/http"
 )
 
 // RestConf holding our rest api configurations
 type RestConf struct {
-	MSession    *mgo.Session
-	Mdb         *mgo.Database
-	MCollection *mgo.Collection
+	Mongo *MongoTools
 }
 
 var conf *RestConf
@@ -20,9 +17,11 @@ var conf *RestConf
 // NewRestConf use for creating the configuration structure for Rest-Api server
 func NewRestConf(rc *RestConf) *RestConf {
 	conf = &RestConf{
-		MSession:    rc.MSession,
-		Mdb:         rc.Mdb,
-		MCollection: rc.MCollection,
+		Mongo: &MongoTools{
+			MSession:    rc.Mongo.MSession,
+			Mdb:         rc.Mongo.Mdb,
+			MCollection: rc.Mongo.MCollection,
+		},
 	}
 
 	return conf
@@ -70,4 +69,16 @@ func (rcf *RestConf) StatusHandler(w http.ResponseWriter, r *http.Request) {
 
 	w.Write(out)
 	return
+}
+
+func (rcf *RestConf) InsertBlogHandler(w http.ResponseWriter, r *http.Request) {
+
+}
+
+func (rcf *RestConf) GetBlogHandler(w http.ResponseWriter, r *http.Request) {
+
+}
+
+func (rcf *RestConf) GetAuthorByIDHandler(w http.ResponseWriter, r *http.Request) {
+
 }
