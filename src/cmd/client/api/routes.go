@@ -12,5 +12,9 @@ func Routes() http.Handler {
 	mux.Use(conf.enableCORS)
 	mux.Get("/create-blog", conf.StatusHandler)
 
+	mux.Post("/insert-blog", conf.InsertBlogHandler)
+	mux.Get("/get-blog/{id}", conf.GetBlogHandler)
+	mux.Get("/get-author/{id}", conf.GetAuthorByIDHandler)
+
 	return mux
 }
