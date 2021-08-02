@@ -15,6 +15,7 @@ func Routes() http.Handler {
 	mux.Post("/insert-blog", conf.InsertBlogHandler)
 	mux.Get("/get-blog/{id}", conf.GetBlogHandler)
 	mux.Get("/get-author/{id}", conf.GetAuthorByIDHandler)
+	mux.Post("/insert-author", conf.InsertAuthorHandler)
 
 	return mux
 }

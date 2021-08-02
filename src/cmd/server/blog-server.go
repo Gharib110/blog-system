@@ -27,7 +27,38 @@ type Config struct {
 
 var aC *Config
 
+// BlogSystem Holder of RPC methods for blogSystem service
 type BlogSystem struct{}
+
+// DeleteBlog use for deleting a blog by its own id
+func (b BlogSystem) DeleteBlog(ctx context.Context, r *pb.DeleteBlogRequest) (*pb.DeleteBlogResponse, error) {
+	var resp *pb.DeleteBlogResponse
+
+	go func() {
+		aC.sigMutex.Lock()
+		err := aC.MongoDB.MCollections["blogs"].Remove(bson.M{"_id": bson.ObjectIdHex(r.GetBlogId())})
+		aC.sigMutex.Unlock()
+		if err != nil {
+			zerolog.Error().Msg(err.Error() + "; Occurred in deleting a blog with ID")
+			aC.SignalChan <- status.Error(codes.Internal, err.Error())
+			return
+		}
+
+		aC.okChan <- true
+		return
+	}()
+
+	select {
+	case <-ctx.Done():
+		err := ctx.Err()
+		return nil, status.Error(status.Code(err), err.Error())
+	case err := <-aC.SignalChan:
+		return nil, status.Error(status.Code(err), err.Error())
+	case <-aC.okChan:
+		resp = &pb.DeleteBlogResponse{BlogId: r.GetBlogId()}
+		return resp, nil
+	}
+}
 
 // UpdateBlog use for updating a blog with its own ID
 func (b BlogSystem) UpdateBlog(ctx context.Context, r *pb.UpdateBlogRequest) (*pb.UpdateBlogResponse, error) {

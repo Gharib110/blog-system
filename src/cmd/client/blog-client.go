@@ -52,17 +52,7 @@ func main() {
 	}
 
 	idleChan := make(chan struct{}, 1)
-	go func() {
-		sigChan := make(chan os.Signal, 1)
-		signal.Notify(sigChan, os.Interrupt)
-		<-sigChan
-
-		if err = srv.Shutdown(context.Background()); err != nil {
-			zerolog.Error().Msg(err.Error())
-		}
-
-		close(idleChan)
-	}()
+	go handlingPrettyShutdown(&srv, idleChan)
 
 	zerolog.Log().Msg("HTTP1.X server is listening on localhost:8080 ...")
 	if err = srv.ListenAndServe(); err != http.ErrServerClosed {
@@ -71,20 +61,6 @@ func main() {
 
 	<-idleChan
 	zerolog.Log().Msg("HTTP1.X server shutdown successfully ... ")
-	// Testing Creating blog
-	//resp, err := clientConfig.CreateBlogs()
-	//if err != nil {
-	//	return
-	//}
-	//fmt.Println(resp)
-
-	// Testing Reading blog with _id
-	//blog, err := clientConfig.ReadBlogs("61065b241d06c4042c5cb97f")
-	//if err != nil {
-	//	zerolog.Error().Msg(err.Error())
-	//	return
-	//}
-	//fmt.Println(blog)
 
 	return
 }
@@ -98,6 +74,19 @@ func createClientConnection() (*grpc.ClientConn, error) {
 	}
 
 	return Conn, nil
+}
+
+// handlingPrettyShutdown use for shutdown the HTTP1.X server gracefully
+func handlingPrettyShutdown(srv *http.Server, idleC chan struct{}) {
+	sigChan := make(chan os.Signal, 1)
+	signal.Notify(sigChan, os.Interrupt)
+	<-sigChan
+
+	if err := srv.Shutdown(context.Background()); err != nil {
+		zerolog.Error().Msg(err.Error())
+	}
+
+	close(idleC)
 }
 
 // CreateBlogs use for creating blog in out gRPC Server
@@ -157,3 +146,18 @@ func (cc *ClientConfig) UpdateBlogs(bp *models.BlogItemPayload) (*pb.UpdateBlogR
 
 	return updatedBlog, nil
 }
+
+// Testing Creating blog
+//resp, err := clientConfig.CreateBlogs()
+//if err != nil {
+//	return
+//}
+//fmt.Println(resp)
+
+// Testing Reading blog with _id
+//blog, err := clientConfig.ReadBlogs("61065b241d06c4042c5cb97f")
+//if err != nil {
+//	zerolog.Error().Msg(err.Error())
+//	return
+//}
+//fmt.Println(blog)

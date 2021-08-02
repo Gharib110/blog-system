@@ -67,7 +67,7 @@ func (rcf *RestConf) StatusHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
 
-	w.Write(out)
+	_, err = w.Write(out)
 	return
 }
 
@@ -80,5 +80,9 @@ func (rcf *RestConf) GetBlogHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func (rcf *RestConf) GetAuthorByIDHandler(w http.ResponseWriter, r *http.Request) {
+
+}
+
+func (rcf *RestConf) InsertAuthorHandler(w http.ResponseWriter, r *http.Request) {
 
 }
