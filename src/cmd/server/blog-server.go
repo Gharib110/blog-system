@@ -29,6 +29,7 @@ var aC *Config
 
 type BlogSystem struct{}
 
+// UpdateBlog use for updating a blog with its own ID
 func (b BlogSystem) UpdateBlog(ctx context.Context, r *pb.UpdateBlogRequest) (*pb.UpdateBlogResponse, error) {
 	var respBlog *pb.UpdateBlogResponse
 	var blogItem *db.BlogItem

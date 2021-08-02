@@ -9,6 +9,9 @@ import (
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
+	"net/http"
+	"os"
+	"os/signal"
 	"time"
 )
 
@@ -39,6 +42,35 @@ func main() {
 	blogClient := pb.NewBlogSystemClient(clientConfig.ClientConn)
 	clientConfig.BlogClient = blogClient
 
+	srv := http.Server{
+		Addr:              "localhost:8080",
+		Handler:           api.Routes(),
+		ReadTimeout:       time.Second * 20,
+		ReadHeaderTimeout: time.Second * 10,
+		WriteTimeout:      time.Second * 15,
+		IdleTimeout:       time.Second * 10,
+	}
+
+	idleChan := make(chan struct{}, 1)
+	go func() {
+		sigChan := make(chan os.Signal, 1)
+		signal.Notify(sigChan, os.Interrupt)
+		<-sigChan
+
+		if err = srv.Shutdown(context.Background()); err != nil {
+			zerolog.Error().Msg(err.Error())
+		}
+
+		close(idleChan)
+	}()
+
+	zerolog.Log().Msg("HTTP1.X server is listening on localhost:8080 ...")
+	if err = srv.ListenAndServe(); err != http.ErrServerClosed {
+		zerolog.Error().Msg(err.Error())
+	}
+
+	<-idleChan
+	zerolog.Log().Msg("HTTP1.X server shutdown successfully ... ")
 	// Testing Creating blog
 	//resp, err := clientConfig.CreateBlogs()
 	//if err != nil {

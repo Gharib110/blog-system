@@ -19,6 +19,7 @@ func NewSession(dsn string) (*mgo.Session, error) {
 		zerolog.Fatal().Msg(err.Error())
 		return nil, err
 	}
+
 	err = session.Ping()
 	if err != nil {
 		zerolog.Fatal().Msg(err.Error())
@@ -33,6 +34,7 @@ func (m *MDatabase) AddDatabase(dbname string) {
 	m.Mdb = m.MSession.DB(dbname)
 }
 
+// AddCollection use for adding collections in our configuration caches
 func (m *MDatabase) AddCollection(cname string) {
 	m.MCollections[cname] = m.Mdb.C(cname)
 }

@@ -5,7 +5,8 @@ import (
 	"net/http"
 )
 
-func routes() http.Handler {
+// Routes make http handler for HTTP server
+func Routes() http.Handler {
 	mux := chi.NewRouter()
 
 	mux.Use(conf.enableCORS)
