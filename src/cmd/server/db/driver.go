@@ -13,6 +13,7 @@ type MDatabase struct {
 	MCollections map[string]*mgo.Collection
 }
 
+// NewSession use for creating mongodb session for server-side
 func NewSession(dsn string) (*mgo.Session, error) {
 	session, err := mgo.Dial(dsn)
 	if err != nil {

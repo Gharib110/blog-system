@@ -11,6 +11,7 @@ type MongoTools struct {
 	MCollection map[string]*mgo.Collection
 }
 
+// NewMSession use for creating mongodb session for client-side
 func NewMSession(dsn string) (*mgo.Session, error) {
 	session, err := mgo.Dial(dsn)
 	if err != nil {
