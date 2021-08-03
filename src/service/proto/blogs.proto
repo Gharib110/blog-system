@@ -4,12 +4,14 @@ package blog;
 
 option go_package="service/pb";
 
+// Author a structure for holding any individual Author data
 message Author {
   string id=1;
   string name=2;
   string career=3;
 }
 
+//Blog a structure for holding any individual Blog data
 message Blog {
   string id=1;
   string author_id=2;
@@ -49,9 +51,24 @@ message DeleteBlogResponse {
   string blog_id=1;
 }
 
+message ListBlogRequest {
+  uint32 blog_signal=1;
+}
+
+message ListBlogResponse {
+  Blog blog=1;
+}
+
+// BlogSystem use for registering any RPC service that related to Blog System
 service BlogSystem {
   rpc CreateBlog(CreateBlogRequest) returns (CreateBlogResponse) {};
   rpc ReadBlog(ReadBlogRequest) returns (ReadBlogResponse) {};
   rpc UpdateBlog(UpdateBlogRequest) returns (UpdateBlogResponse) {};
   rpc DeleteBlog(DeleteBlogRequest) returns (DeleteBlogResponse) {};
+  rpc ListBlog(ListBlogRequest) returns (stream ListBlogResponse) {};
+}
+
+// AuthorSystem use for registering any RPC service that related to Author System
+service AuthorSystem {
+
 }

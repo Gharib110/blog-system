@@ -147,6 +147,28 @@ func (cc *ClientConfig) UpdateBlogs(bp *models.BlogItemPayload) (*pb.UpdateBlogR
 	return updatedBlog, nil
 }
 
+// DeleteBlogs use for deleting blogs by getting its own ID
+func (cc *ClientConfig) DeleteBlogs(id string) (*pb.DeleteBlogResponse, error) {
+	req := &pb.DeleteBlogRequest{BlogId: id}
+
+	ctx, cancel := context.WithTimeout(context.Background(), time.Second*10)
+	defer cancel()
+
+	deletedBlog, err := cc.BlogClient.DeleteBlog(ctx, req)
+	s, ok := status.FromError(err)
+	if !ok {
+		zerolog.Error().Msg(s.Code().String() + "; " + s.Message())
+		return nil, err
+	}
+
+	return deletedBlog, nil
+}
+
+// GetAllBlogs use for getting all blogs from server
+func (cc *ClientConfig) GetAllBlogs() {
+
+}
+
 // Testing Creating blog
 //resp, err := clientConfig.CreateBlogs()
 //if err != nil {
@@ -158,6 +180,12 @@ func (cc *ClientConfig) UpdateBlogs(bp *models.BlogItemPayload) (*pb.UpdateBlogR
 //blog, err := clientConfig.ReadBlogs("61065b241d06c4042c5cb97f")
 //if err != nil {
 //	zerolog.Error().Msg(err.Error())
+//	return
+//}
+//fmt.Println(blog)
+
+//blog, err := clientConfig.DeleteBlogs("6105aaf01d06c4047ca3ff0d")
+//if err != nil {
 //	return
 //}
 //fmt.Println(blog)

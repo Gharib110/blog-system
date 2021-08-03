@@ -18,11 +18,11 @@ import (
 
 // Config use for holding the gRPC server configuration objects
 type Config struct {
-	MongoDB    *db.MDatabase
-	SignalChan chan error
-	sigMutex   *sync.Mutex
-	okChan     chan bool
-	okMutex    *sync.Mutex
+	MongoDB     *db.MDatabase
+	SignalChan  chan error
+	updateMutex *sync.Mutex
+	okChan      chan bool
+	DeleteMutex *sync.Mutex
 }
 
 var aC *Config
@@ -30,14 +30,79 @@ var aC *Config
 // BlogSystem Holder of RPC methods for blogSystem service
 type BlogSystem struct{}
 
+// ListBlog use for getting several blogs by specify the number of blogs that we want
+func (b *BlogSystem) ListBlog(r *pb.ListBlogRequest, stream pb.BlogSystem_ListBlogServer) error {
+	blogI := &db.BlogItem{
+		ID:       "",
+		AuthorID: "",
+		Content:  "",
+		Title:    "",
+	}
+
+	lsBlog := &pb.ListBlogResponse{
+		Blog: &pb.Blog{
+			Id:       "",
+			AuthorId: "",
+			Title:    "",
+			Content:  "",
+		},
+	}
+
+	go func() {
+		iterator := aC.MongoDB.MCollections["blogs"].Find(bson.M{}).Limit(int(r.GetBlogSignal())).Iter()
+		defer func(iterator *mgo.Iter) {
+			err := iterator.Close()
+			if err != nil {
+				zerolog.Error().Msg("Error in closing the iterator of bson Objects")
+				return
+			}
+		}(iterator)
+
+		for iterator.Done() {
+			sigB := iterator.Next(blogI)
+			if sigB {
+				lsBlog.GetBlog().Id = blogI.ID.Hex()
+				lsBlog.GetBlog().Content = blogI.Content
+				lsBlog.GetBlog().Title = blogI.Title
+				lsBlog.GetBlog().AuthorId = blogI.AuthorID
+
+				err := stream.Send(lsBlog)
+				if err != nil {
+					zerolog.Error().Msg(err.Error())
+					aC.SignalChan <- status.Error(status.Code(err), err.Error()+
+						"; An Internal Error occurred in sending response to client")
+					return
+				}
+			} else {
+				aC.SignalChan <- status.Error(codes.Internal, "Error in unmarshalling the data; Occurred in GetAllBlogs")
+				zerolog.Error().Msg("Error in unmarshalling the data")
+				return
+			}
+		}
+
+		aC.okChan <- true
+		return
+	}()
+
+	select {
+	case <-stream.Context().Done():
+		err := stream.Context().Err()
+		return status.Error(status.Code(err), "; An internal error occurred in streaming cause of stream.Context ")
+	case err := <-aC.SignalChan:
+		return err
+	case <-aC.okChan:
+		return nil
+	}
+}
+
 // DeleteBlog use for deleting a blog by its own id
-func (b BlogSystem) DeleteBlog(ctx context.Context, r *pb.DeleteBlogRequest) (*pb.DeleteBlogResponse, error) {
+func (b *BlogSystem) DeleteBlog(ctx context.Context, r *pb.DeleteBlogRequest) (*pb.DeleteBlogResponse, error) {
 	var resp *pb.DeleteBlogResponse
 
 	go func() {
-		aC.sigMutex.Lock()
+		aC.DeleteMutex.Lock()
 		err := aC.MongoDB.MCollections["blogs"].Remove(bson.M{"_id": bson.ObjectIdHex(r.GetBlogId())})
-		aC.sigMutex.Unlock()
+		aC.DeleteMutex.Unlock()
 		if err != nil {
 			zerolog.Error().Msg(err.Error() + "; Occurred in deleting a blog with ID")
 			aC.SignalChan <- status.Error(codes.Internal, err.Error())
@@ -61,7 +126,7 @@ func (b BlogSystem) DeleteBlog(ctx context.Context, r *pb.DeleteBlogRequest) (*p
 }
 
 // UpdateBlog use for updating a blog with its own ID
-func (b BlogSystem) UpdateBlog(ctx context.Context, r *pb.UpdateBlogRequest) (*pb.UpdateBlogResponse, error) {
+func (b *BlogSystem) UpdateBlog(ctx context.Context, r *pb.UpdateBlogRequest) (*pb.UpdateBlogResponse, error) {
 	var respBlog *pb.UpdateBlogResponse
 	var blogItem *db.BlogItem
 
@@ -79,9 +144,9 @@ func (b BlogSystem) UpdateBlog(ctx context.Context, r *pb.UpdateBlogRequest) (*p
 		blogItem.Content = r.GetBlog().GetContent()
 		blogItem.AuthorID = r.GetBlog().GetAuthorId()
 
-		aC.sigMutex.Lock()
+		aC.updateMutex.Lock()
 		err = aC.MongoDB.MCollections["blogs"].UpdateId(bson.M{"_id": bson.ObjectIdHex(r.GetBlog().GetId())}, blogItem)
-		aC.sigMutex.Unlock()
+		aC.updateMutex.Unlock()
 
 		if err != nil {
 			zerolog.Error().Msg(err.Error())
@@ -110,7 +175,7 @@ func (b BlogSystem) UpdateBlog(ctx context.Context, r *pb.UpdateBlogRequest) (*p
 }
 
 // ReadBlog use for reading a blog with its ID
-func (b BlogSystem) ReadBlog(ctx context.Context, r *pb.ReadBlogRequest) (*pb.ReadBlogResponse, error) {
+func (b *BlogSystem) ReadBlog(ctx context.Context, r *pb.ReadBlogRequest) (*pb.ReadBlogResponse, error) {
 	var respBlog *pb.ReadBlogResponse
 	var blogItem *db.BlogItem
 
@@ -145,7 +210,7 @@ func (b BlogSystem) ReadBlog(ctx context.Context, r *pb.ReadBlogRequest) (*pb.Re
 }
 
 // CreateBlog use for creating blog
-func (b BlogSystem) CreateBlog(ctx context.Context, r *pb.CreateBlogRequest) (*pb.CreateBlogResponse, error) {
+func (b *BlogSystem) CreateBlog(ctx context.Context, r *pb.CreateBlogRequest) (*pb.CreateBlogResponse, error) {
 	var respBlog *pb.CreateBlogResponse
 
 	go func() {
@@ -224,10 +289,10 @@ func runServer() error {
 			Mdb:          nil,
 			MCollections: make(map[string]*mgo.Collection),
 		},
-		SignalChan: make(chan error, 10),
-		sigMutex:   &sync.Mutex{},
-		okChan:     make(chan bool, 10),
-		okMutex:    &sync.Mutex{},
+		SignalChan:  make(chan error, 10),
+		updateMutex: &sync.Mutex{},
+		okChan:      make(chan bool, 10),
+		DeleteMutex: &sync.Mutex{},
 	}
 
 	aC.MongoDB.MSession, err = db.NewSession("localhost:27017")

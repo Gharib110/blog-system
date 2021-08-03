@@ -5,7 +5,7 @@ import (
 	"net/http"
 )
 
-// Routes make http handler for HTTP server
+// Routes make http handlers for HTTP1.X API server
 func Routes() http.Handler {
 	mux := chi.NewRouter()
 
@@ -13,9 +13,10 @@ func Routes() http.Handler {
 	mux.Get("/create-blog", conf.StatusHandler)
 
 	mux.Post("/insert-blog", conf.InsertBlogHandler)
+	mux.Post("/insert-author", conf.InsertAuthorHandler)
+
 	mux.Get("/get-blog/{id}", conf.GetBlogHandler)
 	mux.Get("/get-author/{id}", conf.GetAuthorByIDHandler)
-	mux.Post("/insert-author", conf.InsertAuthorHandler)
 
 	return mux
 }
