@@ -2,7 +2,6 @@ package main
 
 import (
 	"context"
-	"fmt"
 	"github.com/DapperBlondie/blog-system/src/cmd/client/api"
 	"github.com/DapperBlondie/blog-system/src/cmd/client/models"
 	"github.com/DapperBlondie/blog-system/src/service/pb"
@@ -44,16 +43,7 @@ func main() {
 	blogClient := pb.NewBlogSystemClient(clientConfig.ClientConn)
 	clientConfig.BlogClient = blogClient
 
-	blogs, err := clientConfig.GetAllBlogs(5)
-	if err == io.EOF {
-		zerolog.Error().Msg(err.Error())
-		fmt.Println(blogs)
-		return
-	} else if err != nil {
-		zerolog.Error().Msg(err.Error())
-		return
-	}
-	/*srv := http.Server{
+	srv := http.Server{
 		Addr:              "localhost:8080",
 		Handler:           api.Routes(),
 		ReadTimeout:       time.Second * 20,
@@ -68,10 +58,11 @@ func main() {
 	zerolog.Log().Msg("HTTP1.X server is listening on localhost:8080 ...")
 	if err = srv.ListenAndServe(); err != http.ErrServerClosed {
 		zerolog.Error().Msg(err.Error())
+		return
 	}
 
 	<-idleChan
-	zerolog.Log().Msg("HTTP1.X server shutdown successfully ... ")*/
+	zerolog.Log().Msg("HTTP1.X server shutdown successfully ... ")
 
 	return
 }
@@ -224,3 +215,13 @@ func (cc *ClientConfig) GetAllBlogs(num uint32) ([]*pb.ListBlogResponse, error) 
 //	return
 //}
 //fmt.Println(blog)
+
+//blogs, err := clientConfig.GetAllBlogs(5)
+//if err == io.EOF {
+//	zerolog.Error().Msg(err.Error())
+//	fmt.Println(blogs)
+//	return
+//} else if err != nil {
+//	zerolog.Error().Msg(err.Error())
+//	return
+//}

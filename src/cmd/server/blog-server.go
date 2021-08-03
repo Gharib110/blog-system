@@ -20,8 +20,8 @@ import (
 type Config struct {
 	MongoDB     *db.MDatabase
 	SignalChan  chan error
-	updateMutex *sync.Mutex
 	okChan      chan bool
+	updateMutex *sync.Mutex
 	DeleteMutex *sync.Mutex
 }
 
