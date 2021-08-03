@@ -38,7 +38,6 @@ func (b *BlogSystem) ListBlog(r *pb.ListBlogRequest, stream pb.BlogSystem_ListBl
 		Content:  "",
 		Title:    "",
 	}
-
 	lsBlog := &pb.ListBlogResponse{
 		Blog: &pb.Blog{
 			Id:       "",
@@ -49,16 +48,16 @@ func (b *BlogSystem) ListBlog(r *pb.ListBlogRequest, stream pb.BlogSystem_ListBl
 	}
 
 	go func() {
-		iterator := aC.MongoDB.MCollections["blogs"].Find(bson.M{}).Limit(int(r.GetBlogSignal())).Iter()
+		iterator := aC.MongoDB.MCollections["blogs"].Find(nil).Limit(int(r.GetBlogSignal())).Iter()
 		defer func(iterator *mgo.Iter) {
 			err := iterator.Close()
 			if err != nil {
-				zerolog.Error().Msg("Error in closing the iterator of bson Objects")
+				zerolog.Error().Msg(err.Error() + "; Error in closing the mongodb iterator")
 				return
 			}
 		}(iterator)
 
-		for iterator.Done() {
+		for !iterator.Done() {
 			sigB := iterator.Next(blogI)
 			if sigB {
 				lsBlog.GetBlog().Id = blogI.ID.Hex()
@@ -71,11 +70,13 @@ func (b *BlogSystem) ListBlog(r *pb.ListBlogRequest, stream pb.BlogSystem_ListBl
 					zerolog.Error().Msg(err.Error())
 					aC.SignalChan <- status.Error(status.Code(err), err.Error()+
 						"; An Internal Error occurred in sending response to client")
+
 					return
 				}
 			} else {
 				aC.SignalChan <- status.Error(codes.Internal, "Error in unmarshalling the data; Occurred in GetAllBlogs")
 				zerolog.Error().Msg("Error in unmarshalling the data")
+
 				return
 			}
 		}

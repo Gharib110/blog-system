@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"fmt"
 	"github.com/DapperBlondie/blog-system/src/cmd/client/api"
 	"github.com/DapperBlondie/blog-system/src/cmd/client/models"
 	"github.com/DapperBlondie/blog-system/src/service/pb"
@@ -9,6 +10,7 @@ import (
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
+	"io"
 	"net/http"
 	"os"
 	"os/signal"
@@ -42,7 +44,16 @@ func main() {
 	blogClient := pb.NewBlogSystemClient(clientConfig.ClientConn)
 	clientConfig.BlogClient = blogClient
 
-	srv := http.Server{
+	blogs, err := clientConfig.GetAllBlogs(5)
+	if err == io.EOF {
+		zerolog.Error().Msg(err.Error())
+		fmt.Println(blogs)
+		return
+	} else if err != nil {
+		zerolog.Error().Msg(err.Error())
+		return
+	}
+	/*srv := http.Server{
 		Addr:              "localhost:8080",
 		Handler:           api.Routes(),
 		ReadTimeout:       time.Second * 20,
@@ -60,7 +71,7 @@ func main() {
 	}
 
 	<-idleChan
-	zerolog.Log().Msg("HTTP1.X server shutdown successfully ... ")
+	zerolog.Log().Msg("HTTP1.X server shutdown successfully ... ")*/
 
 	return
 }
@@ -165,7 +176,31 @@ func (cc *ClientConfig) DeleteBlogs(id string) (*pb.DeleteBlogResponse, error) {
 }
 
 // GetAllBlogs use for getting all blogs from server
-func (cc *ClientConfig) GetAllBlogs() {
+func (cc *ClientConfig) GetAllBlogs(num uint32) ([]*pb.ListBlogResponse, error) {
+	req := &pb.ListBlogRequest{BlogSignal: num}
+	lstBlogs := []*pb.ListBlogResponse{}
+
+	ctx, cancel := context.WithTimeout(context.Background(), time.Hour*10)
+	defer cancel()
+
+	stream, err := cc.BlogClient.ListBlog(ctx, req)
+	s, ok := status.FromError(err)
+	if !ok {
+		zerolog.Error().Msg(s.Code().String() + " " + s.Message() + "; in GetAllBlogs")
+		return nil, err
+	}
+
+	for {
+		blog, err := stream.Recv()
+		if err == io.EOF {
+			zerolog.Error().Msg(err.Error())
+			return lstBlogs, err
+		} else if err != nil {
+			zerolog.Error().Msg(err.Error())
+			return nil, err
+		}
+		lstBlogs = append(lstBlogs, blog)
+	}
 
 }
 
