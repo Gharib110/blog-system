@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"fmt"
 	"github.com/DapperBlondie/blog-system/src/cmd/client/api"
 	"github.com/DapperBlondie/blog-system/src/cmd/client/models"
 	"github.com/DapperBlondie/blog-system/src/service/pb"
@@ -9,6 +10,7 @@ import (
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
+	"gopkg.in/mgo.v2"
 	"io"
 	"net/http"
 	"os"
@@ -22,6 +24,12 @@ type ClientConfig struct {
 	BlogClient pb.BlogSystemClient
 	RestConfig *api.RestConf
 }
+
+const (
+	MONGO_HOST = "localhost:27017"
+	GRPC_HOST  = "localhost:50051"
+	REST_HOST  = "localhost:8080"
+)
 
 var clientConfig *ClientConfig
 
@@ -42,9 +50,24 @@ func main() {
 	clientConfig = &ClientConfig{ClientConn: Conn}
 	blogClient := pb.NewBlogSystemClient(clientConfig.ClientConn)
 	clientConfig.BlogClient = blogClient
+	session, err := api.NewMSession(MONGO_HOST)
+	if err != nil {
+		zerolog.Fatal().Msg(err.Error())
+		return
+	}
+
+	clientConfig.RestConfig = &api.RestConf{
+		Mongo: &api.MongoTools{
+			MSession:    session,
+			MCollection: make(map[string]*mgo.Collection),
+		},
+	}
+	clientConfig.RestConfig.Mongo.NewMDatabase("blog-system")
+	clientConfig.RestConfig.Mongo.NewMCollection("blogs")
+	clientConfig.RestConfig.Mongo.NewMCollection("authors")
 
 	srv := http.Server{
-		Addr:              "localhost:8080",
+		Addr:              REST_HOST,
 		Handler:           api.Routes(),
 		ReadTimeout:       time.Second * 20,
 		ReadHeaderTimeout: time.Second * 10,
@@ -55,7 +78,7 @@ func main() {
 	idleChan := make(chan struct{}, 1)
 	go handlingPrettyShutdown(&srv, idleChan)
 
-	zerolog.Log().Msg("HTTP1.X server is listening on localhost:8080 ...")
+	zerolog.Log().Msg(fmt.Sprintf("HTTP1.X server is listening on %s ...\n", REST_HOST))
 	if err = srv.ListenAndServe(); err != http.ErrServerClosed {
 		zerolog.Error().Msg(err.Error())
 		return
@@ -69,7 +92,7 @@ func main() {
 
 // createClientConnection use for creating a clientConnection for our client
 func createClientConnection() (*grpc.ClientConn, error) {
-	Conn, err := grpc.Dial("localhost:50051", grpc.WithInsecure())
+	Conn, err := grpc.Dial(GRPC_HOST, grpc.WithInsecure())
 	if err != nil {
 		zerolog.Fatal().Msg(err.Error())
 		return nil, err
