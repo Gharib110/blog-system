@@ -632,6 +632,476 @@ func (x *ListBlogResponse) GetBlog() *Blog {
 	return nil
 }
 
+type CreateAuthorRequest struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Author *Author `protobuf:"bytes,1,opt,name=author,proto3" json:"author,omitempty"`
+}
+
+func (x *CreateAuthorRequest) Reset() {
+	*x = CreateAuthorRequest{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_blogs_proto_msgTypes[12]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *CreateAuthorRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*CreateAuthorRequest) ProtoMessage() {}
+
+func (x *CreateAuthorRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_blogs_proto_msgTypes[12]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use CreateAuthorRequest.ProtoReflect.Descriptor instead.
+func (*CreateAuthorRequest) Descriptor() ([]byte, []int) {
+	return file_blogs_proto_rawDescGZIP(), []int{12}
+}
+
+func (x *CreateAuthorRequest) GetAuthor() *Author {
+	if x != nil {
+		return x.Author
+	}
+	return nil
+}
+
+type CreateAuthorResponse struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Author *Author `protobuf:"bytes,1,opt,name=author,proto3" json:"author,omitempty"`
+}
+
+func (x *CreateAuthorResponse) Reset() {
+	*x = CreateAuthorResponse{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_blogs_proto_msgTypes[13]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *CreateAuthorResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*CreateAuthorResponse) ProtoMessage() {}
+
+func (x *CreateAuthorResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_blogs_proto_msgTypes[13]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use CreateAuthorResponse.ProtoReflect.Descriptor instead.
+func (*CreateAuthorResponse) Descriptor() ([]byte, []int) {
+	return file_blogs_proto_rawDescGZIP(), []int{13}
+}
+
+func (x *CreateAuthorResponse) GetAuthor() *Author {
+	if x != nil {
+		return x.Author
+	}
+	return nil
+}
+
+type ReadAuthorRequest struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	AuthorId string `protobuf:"bytes,1,opt,name=author_id,json=authorId,proto3" json:"author_id,omitempty"`
+}
+
+func (x *ReadAuthorRequest) Reset() {
+	*x = ReadAuthorRequest{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_blogs_proto_msgTypes[14]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *ReadAuthorRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ReadAuthorRequest) ProtoMessage() {}
+
+func (x *ReadAuthorRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_blogs_proto_msgTypes[14]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ReadAuthorRequest.ProtoReflect.Descriptor instead.
+func (*ReadAuthorRequest) Descriptor() ([]byte, []int) {
+	return file_blogs_proto_rawDescGZIP(), []int{14}
+}
+
+func (x *ReadAuthorRequest) GetAuthorId() string {
+	if x != nil {
+		return x.AuthorId
+	}
+	return ""
+}
+
+type ReadAuthorResponse struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Author *Author `protobuf:"bytes,1,opt,name=author,proto3" json:"author,omitempty"`
+}
+
+func (x *ReadAuthorResponse) Reset() {
+	*x = ReadAuthorResponse{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_blogs_proto_msgTypes[15]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *ReadAuthorResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ReadAuthorResponse) ProtoMessage() {}
+
+func (x *ReadAuthorResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_blogs_proto_msgTypes[15]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ReadAuthorResponse.ProtoReflect.Descriptor instead.
+func (*ReadAuthorResponse) Descriptor() ([]byte, []int) {
+	return file_blogs_proto_rawDescGZIP(), []int{15}
+}
+
+func (x *ReadAuthorResponse) GetAuthor() *Author {
+	if x != nil {
+		return x.Author
+	}
+	return nil
+}
+
+type UpdateAuthorRequest struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Author *Author `protobuf:"bytes,1,opt,name=author,proto3" json:"author,omitempty"`
+}
+
+func (x *UpdateAuthorRequest) Reset() {
+	*x = UpdateAuthorRequest{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_blogs_proto_msgTypes[16]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *UpdateAuthorRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*UpdateAuthorRequest) ProtoMessage() {}
+
+func (x *UpdateAuthorRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_blogs_proto_msgTypes[16]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use UpdateAuthorRequest.ProtoReflect.Descriptor instead.
+func (*UpdateAuthorRequest) Descriptor() ([]byte, []int) {
+	return file_blogs_proto_rawDescGZIP(), []int{16}
+}
+
+func (x *UpdateAuthorRequest) GetAuthor() *Author {
+	if x != nil {
+		return x.Author
+	}
+	return nil
+}
+
+type UpdateAuthorResponse struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Author *Author `protobuf:"bytes,1,opt,name=author,proto3" json:"author,omitempty"`
+}
+
+func (x *UpdateAuthorResponse) Reset() {
+	*x = UpdateAuthorResponse{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_blogs_proto_msgTypes[17]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *UpdateAuthorResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*UpdateAuthorResponse) ProtoMessage() {}
+
+func (x *UpdateAuthorResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_blogs_proto_msgTypes[17]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use UpdateAuthorResponse.ProtoReflect.Descriptor instead.
+func (*UpdateAuthorResponse) Descriptor() ([]byte, []int) {
+	return file_blogs_proto_rawDescGZIP(), []int{17}
+}
+
+func (x *UpdateAuthorResponse) GetAuthor() *Author {
+	if x != nil {
+		return x.Author
+	}
+	return nil
+}
+
+type DeleteAuthorRequest struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	AuthorId string `protobuf:"bytes,1,opt,name=author_id,json=authorId,proto3" json:"author_id,omitempty"`
+}
+
+func (x *DeleteAuthorRequest) Reset() {
+	*x = DeleteAuthorRequest{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_blogs_proto_msgTypes[18]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *DeleteAuthorRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*DeleteAuthorRequest) ProtoMessage() {}
+
+func (x *DeleteAuthorRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_blogs_proto_msgTypes[18]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use DeleteAuthorRequest.ProtoReflect.Descriptor instead.
+func (*DeleteAuthorRequest) Descriptor() ([]byte, []int) {
+	return file_blogs_proto_rawDescGZIP(), []int{18}
+}
+
+func (x *DeleteAuthorRequest) GetAuthorId() string {
+	if x != nil {
+		return x.AuthorId
+	}
+	return ""
+}
+
+type DeleteAuthorResponse struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	AuthorId string `protobuf:"bytes,1,opt,name=author_id,json=authorId,proto3" json:"author_id,omitempty"`
+}
+
+func (x *DeleteAuthorResponse) Reset() {
+	*x = DeleteAuthorResponse{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_blogs_proto_msgTypes[19]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *DeleteAuthorResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*DeleteAuthorResponse) ProtoMessage() {}
+
+func (x *DeleteAuthorResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_blogs_proto_msgTypes[19]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use DeleteAuthorResponse.ProtoReflect.Descriptor instead.
+func (*DeleteAuthorResponse) Descriptor() ([]byte, []int) {
+	return file_blogs_proto_rawDescGZIP(), []int{19}
+}
+
+func (x *DeleteAuthorResponse) GetAuthorId() string {
+	if x != nil {
+		return x.AuthorId
+	}
+	return ""
+}
+
+type ListAuthorRequest struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	AuthorSignal uint32 `protobuf:"varint,1,opt,name=author_signal,json=authorSignal,proto3" json:"author_signal,omitempty"`
+}
+
+func (x *ListAuthorRequest) Reset() {
+	*x = ListAuthorRequest{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_blogs_proto_msgTypes[20]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *ListAuthorRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ListAuthorRequest) ProtoMessage() {}
+
+func (x *ListAuthorRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_blogs_proto_msgTypes[20]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ListAuthorRequest.ProtoReflect.Descriptor instead.
+func (*ListAuthorRequest) Descriptor() ([]byte, []int) {
+	return file_blogs_proto_rawDescGZIP(), []int{20}
+}
+
+func (x *ListAuthorRequest) GetAuthorSignal() uint32 {
+	if x != nil {
+		return x.AuthorSignal
+	}
+	return 0
+}
+
+type ListAuthorResponse struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Author *Author `protobuf:"bytes,1,opt,name=author,proto3" json:"author,omitempty"`
+}
+
+func (x *ListAuthorResponse) Reset() {
+	*x = ListAuthorResponse{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_blogs_proto_msgTypes[21]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *ListAuthorResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ListAuthorResponse) ProtoMessage() {}
+
+func (x *ListAuthorResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_blogs_proto_msgTypes[21]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ListAuthorResponse.ProtoReflect.Descriptor instead.
+func (*ListAuthorResponse) Descriptor() ([]byte, []int) {
+	return file_blogs_proto_rawDescGZIP(), []int{21}
+}
+
+func (x *ListAuthorResponse) GetAuthor() *Author {
+	if x != nil {
+		return x.Author
+	}
+	return nil
+}
+
 var File_blogs_proto protoreflect.FileDescriptor
 
 var file_blogs_proto_rawDesc = []byte{
@@ -678,31 +1148,89 @@ var file_blogs_proto_rawDesc = []byte{
 	0x69, 0x67, 0x6e, 0x61, 0x6c, 0x22, 0x32, 0x0a, 0x10, 0x4c, 0x69, 0x73, 0x74, 0x42, 0x6c, 0x6f,
 	0x67, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x1e, 0x0a, 0x04, 0x62, 0x6c, 0x6f,
 	0x67, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x0a, 0x2e, 0x62, 0x6c, 0x6f, 0x67, 0x2e, 0x42,
-	0x6c, 0x6f, 0x67, 0x52, 0x04, 0x62, 0x6c, 0x6f, 0x67, 0x32, 0xd1, 0x02, 0x0a, 0x0a, 0x42, 0x6c,
-	0x6f, 0x67, 0x53, 0x79, 0x73, 0x74, 0x65, 0x6d, 0x12, 0x41, 0x0a, 0x0a, 0x43, 0x72, 0x65, 0x61,
-	0x74, 0x65, 0x42, 0x6c, 0x6f, 0x67, 0x12, 0x17, 0x2e, 0x62, 0x6c, 0x6f, 0x67, 0x2e, 0x43, 0x72,
-	0x65, 0x61, 0x74, 0x65, 0x42, 0x6c, 0x6f, 0x67, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a,
-	0x18, 0x2e, 0x62, 0x6c, 0x6f, 0x67, 0x2e, 0x43, 0x72, 0x65, 0x61, 0x74, 0x65, 0x42, 0x6c, 0x6f,
-	0x67, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x00, 0x12, 0x3b, 0x0a, 0x08, 0x52,
-	0x65, 0x61, 0x64, 0x42, 0x6c, 0x6f, 0x67, 0x12, 0x15, 0x2e, 0x62, 0x6c, 0x6f, 0x67, 0x2e, 0x52,
-	0x65, 0x61, 0x64, 0x42, 0x6c, 0x6f, 0x67, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x16,
-	0x2e, 0x62, 0x6c, 0x6f, 0x67, 0x2e, 0x52, 0x65, 0x61, 0x64, 0x42, 0x6c, 0x6f, 0x67, 0x52, 0x65,
-	0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x00, 0x12, 0x41, 0x0a, 0x0a, 0x55, 0x70, 0x64, 0x61,
-	0x74, 0x65, 0x42, 0x6c, 0x6f, 0x67, 0x12, 0x17, 0x2e, 0x62, 0x6c, 0x6f, 0x67, 0x2e, 0x55, 0x70,
-	0x64, 0x61, 0x74, 0x65, 0x42, 0x6c, 0x6f, 0x67, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a,
-	0x18, 0x2e, 0x62, 0x6c, 0x6f, 0x67, 0x2e, 0x55, 0x70, 0x64, 0x61, 0x74, 0x65, 0x42, 0x6c, 0x6f,
-	0x67, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x00, 0x12, 0x41, 0x0a, 0x0a, 0x44,
-	0x65, 0x6c, 0x65, 0x74, 0x65, 0x42, 0x6c, 0x6f, 0x67, 0x12, 0x17, 0x2e, 0x62, 0x6c, 0x6f, 0x67,
-	0x2e, 0x44, 0x65, 0x6c, 0x65, 0x74, 0x65, 0x42, 0x6c, 0x6f, 0x67, 0x52, 0x65, 0x71, 0x75, 0x65,
-	0x73, 0x74, 0x1a, 0x18, 0x2e, 0x62, 0x6c, 0x6f, 0x67, 0x2e, 0x44, 0x65, 0x6c, 0x65, 0x74, 0x65,
-	0x42, 0x6c, 0x6f, 0x67, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x00, 0x12, 0x3d,
-	0x0a, 0x08, 0x4c, 0x69, 0x73, 0x74, 0x42, 0x6c, 0x6f, 0x67, 0x12, 0x15, 0x2e, 0x62, 0x6c, 0x6f,
-	0x67, 0x2e, 0x4c, 0x69, 0x73, 0x74, 0x42, 0x6c, 0x6f, 0x67, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73,
-	0x74, 0x1a, 0x16, 0x2e, 0x62, 0x6c, 0x6f, 0x67, 0x2e, 0x4c, 0x69, 0x73, 0x74, 0x42, 0x6c, 0x6f,
-	0x67, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x00, 0x30, 0x01, 0x32, 0x0e, 0x0a,
-	0x0c, 0x41, 0x75, 0x74, 0x68, 0x6f, 0x72, 0x53, 0x79, 0x73, 0x74, 0x65, 0x6d, 0x42, 0x0c, 0x5a,
-	0x0a, 0x73, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x2f, 0x70, 0x62, 0x62, 0x06, 0x70, 0x72, 0x6f,
-	0x74, 0x6f, 0x33,
+	0x6c, 0x6f, 0x67, 0x52, 0x04, 0x62, 0x6c, 0x6f, 0x67, 0x22, 0x3b, 0x0a, 0x13, 0x43, 0x72, 0x65,
+	0x61, 0x74, 0x65, 0x41, 0x75, 0x74, 0x68, 0x6f, 0x72, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74,
+	0x12, 0x24, 0x0a, 0x06, 0x61, 0x75, 0x74, 0x68, 0x6f, 0x72, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0b,
+	0x32, 0x0c, 0x2e, 0x62, 0x6c, 0x6f, 0x67, 0x2e, 0x41, 0x75, 0x74, 0x68, 0x6f, 0x72, 0x52, 0x06,
+	0x61, 0x75, 0x74, 0x68, 0x6f, 0x72, 0x22, 0x3c, 0x0a, 0x14, 0x43, 0x72, 0x65, 0x61, 0x74, 0x65,
+	0x41, 0x75, 0x74, 0x68, 0x6f, 0x72, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x24,
+	0x0a, 0x06, 0x61, 0x75, 0x74, 0x68, 0x6f, 0x72, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x0c,
+	0x2e, 0x62, 0x6c, 0x6f, 0x67, 0x2e, 0x41, 0x75, 0x74, 0x68, 0x6f, 0x72, 0x52, 0x06, 0x61, 0x75,
+	0x74, 0x68, 0x6f, 0x72, 0x22, 0x30, 0x0a, 0x11, 0x52, 0x65, 0x61, 0x64, 0x41, 0x75, 0x74, 0x68,
+	0x6f, 0x72, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x1b, 0x0a, 0x09, 0x61, 0x75, 0x74,
+	0x68, 0x6f, 0x72, 0x5f, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x08, 0x61, 0x75,
+	0x74, 0x68, 0x6f, 0x72, 0x49, 0x64, 0x22, 0x3a, 0x0a, 0x12, 0x52, 0x65, 0x61, 0x64, 0x41, 0x75,
+	0x74, 0x68, 0x6f, 0x72, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x24, 0x0a, 0x06,
+	0x61, 0x75, 0x74, 0x68, 0x6f, 0x72, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x0c, 0x2e, 0x62,
+	0x6c, 0x6f, 0x67, 0x2e, 0x41, 0x75, 0x74, 0x68, 0x6f, 0x72, 0x52, 0x06, 0x61, 0x75, 0x74, 0x68,
+	0x6f, 0x72, 0x22, 0x3b, 0x0a, 0x13, 0x55, 0x70, 0x64, 0x61, 0x74, 0x65, 0x41, 0x75, 0x74, 0x68,
+	0x6f, 0x72, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x24, 0x0a, 0x06, 0x61, 0x75, 0x74,
+	0x68, 0x6f, 0x72, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x0c, 0x2e, 0x62, 0x6c, 0x6f, 0x67,
+	0x2e, 0x41, 0x75, 0x74, 0x68, 0x6f, 0x72, 0x52, 0x06, 0x61, 0x75, 0x74, 0x68, 0x6f, 0x72, 0x22,
+	0x3c, 0x0a, 0x14, 0x55, 0x70, 0x64, 0x61, 0x74, 0x65, 0x41, 0x75, 0x74, 0x68, 0x6f, 0x72, 0x52,
+	0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x24, 0x0a, 0x06, 0x61, 0x75, 0x74, 0x68, 0x6f,
+	0x72, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x0c, 0x2e, 0x62, 0x6c, 0x6f, 0x67, 0x2e, 0x41,
+	0x75, 0x74, 0x68, 0x6f, 0x72, 0x52, 0x06, 0x61, 0x75, 0x74, 0x68, 0x6f, 0x72, 0x22, 0x32, 0x0a,
+	0x13, 0x44, 0x65, 0x6c, 0x65, 0x74, 0x65, 0x41, 0x75, 0x74, 0x68, 0x6f, 0x72, 0x52, 0x65, 0x71,
+	0x75, 0x65, 0x73, 0x74, 0x12, 0x1b, 0x0a, 0x09, 0x61, 0x75, 0x74, 0x68, 0x6f, 0x72, 0x5f, 0x69,
+	0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x08, 0x61, 0x75, 0x74, 0x68, 0x6f, 0x72, 0x49,
+	0x64, 0x22, 0x33, 0x0a, 0x14, 0x44, 0x65, 0x6c, 0x65, 0x74, 0x65, 0x41, 0x75, 0x74, 0x68, 0x6f,
+	0x72, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x1b, 0x0a, 0x09, 0x61, 0x75, 0x74,
+	0x68, 0x6f, 0x72, 0x5f, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x08, 0x61, 0x75,
+	0x74, 0x68, 0x6f, 0x72, 0x49, 0x64, 0x22, 0x38, 0x0a, 0x11, 0x4c, 0x69, 0x73, 0x74, 0x41, 0x75,
+	0x74, 0x68, 0x6f, 0x72, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x23, 0x0a, 0x0d, 0x61,
+	0x75, 0x74, 0x68, 0x6f, 0x72, 0x5f, 0x73, 0x69, 0x67, 0x6e, 0x61, 0x6c, 0x18, 0x01, 0x20, 0x01,
+	0x28, 0x0d, 0x52, 0x0c, 0x61, 0x75, 0x74, 0x68, 0x6f, 0x72, 0x53, 0x69, 0x67, 0x6e, 0x61, 0x6c,
+	0x22, 0x3a, 0x0a, 0x12, 0x4c, 0x69, 0x73, 0x74, 0x41, 0x75, 0x74, 0x68, 0x6f, 0x72, 0x52, 0x65,
+	0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x24, 0x0a, 0x06, 0x61, 0x75, 0x74, 0x68, 0x6f, 0x72,
+	0x18, 0x01, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x0c, 0x2e, 0x62, 0x6c, 0x6f, 0x67, 0x2e, 0x41, 0x75,
+	0x74, 0x68, 0x6f, 0x72, 0x52, 0x06, 0x61, 0x75, 0x74, 0x68, 0x6f, 0x72, 0x32, 0xd1, 0x02, 0x0a,
+	0x0a, 0x42, 0x6c, 0x6f, 0x67, 0x53, 0x79, 0x73, 0x74, 0x65, 0x6d, 0x12, 0x41, 0x0a, 0x0a, 0x43,
+	0x72, 0x65, 0x61, 0x74, 0x65, 0x42, 0x6c, 0x6f, 0x67, 0x12, 0x17, 0x2e, 0x62, 0x6c, 0x6f, 0x67,
+	0x2e, 0x43, 0x72, 0x65, 0x61, 0x74, 0x65, 0x42, 0x6c, 0x6f, 0x67, 0x52, 0x65, 0x71, 0x75, 0x65,
+	0x73, 0x74, 0x1a, 0x18, 0x2e, 0x62, 0x6c, 0x6f, 0x67, 0x2e, 0x43, 0x72, 0x65, 0x61, 0x74, 0x65,
+	0x42, 0x6c, 0x6f, 0x67, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x00, 0x12, 0x3b,
+	0x0a, 0x08, 0x52, 0x65, 0x61, 0x64, 0x42, 0x6c, 0x6f, 0x67, 0x12, 0x15, 0x2e, 0x62, 0x6c, 0x6f,
+	0x67, 0x2e, 0x52, 0x65, 0x61, 0x64, 0x42, 0x6c, 0x6f, 0x67, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73,
+	0x74, 0x1a, 0x16, 0x2e, 0x62, 0x6c, 0x6f, 0x67, 0x2e, 0x52, 0x65, 0x61, 0x64, 0x42, 0x6c, 0x6f,
+	0x67, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x00, 0x12, 0x41, 0x0a, 0x0a, 0x55,
+	0x70, 0x64, 0x61, 0x74, 0x65, 0x42, 0x6c, 0x6f, 0x67, 0x12, 0x17, 0x2e, 0x62, 0x6c, 0x6f, 0x67,
+	0x2e, 0x55, 0x70, 0x64, 0x61, 0x74, 0x65, 0x42, 0x6c, 0x6f, 0x67, 0x52, 0x65, 0x71, 0x75, 0x65,
+	0x73, 0x74, 0x1a, 0x18, 0x2e, 0x62, 0x6c, 0x6f, 0x67, 0x2e, 0x55, 0x70, 0x64, 0x61, 0x74, 0x65,
+	0x42, 0x6c, 0x6f, 0x67, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x00, 0x12, 0x41,
+	0x0a, 0x0a, 0x44, 0x65, 0x6c, 0x65, 0x74, 0x65, 0x42, 0x6c, 0x6f, 0x67, 0x12, 0x17, 0x2e, 0x62,
+	0x6c, 0x6f, 0x67, 0x2e, 0x44, 0x65, 0x6c, 0x65, 0x74, 0x65, 0x42, 0x6c, 0x6f, 0x67, 0x52, 0x65,
+	0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x18, 0x2e, 0x62, 0x6c, 0x6f, 0x67, 0x2e, 0x44, 0x65, 0x6c,
+	0x65, 0x74, 0x65, 0x42, 0x6c, 0x6f, 0x67, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22,
+	0x00, 0x12, 0x3d, 0x0a, 0x08, 0x4c, 0x69, 0x73, 0x74, 0x42, 0x6c, 0x6f, 0x67, 0x12, 0x15, 0x2e,
+	0x62, 0x6c, 0x6f, 0x67, 0x2e, 0x4c, 0x69, 0x73, 0x74, 0x42, 0x6c, 0x6f, 0x67, 0x52, 0x65, 0x71,
+	0x75, 0x65, 0x73, 0x74, 0x1a, 0x16, 0x2e, 0x62, 0x6c, 0x6f, 0x67, 0x2e, 0x4c, 0x69, 0x73, 0x74,
+	0x42, 0x6c, 0x6f, 0x67, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x00, 0x30, 0x01,
+	0x32, 0xf1, 0x02, 0x0a, 0x0c, 0x41, 0x75, 0x74, 0x68, 0x6f, 0x72, 0x53, 0x79, 0x73, 0x74, 0x65,
+	0x6d, 0x12, 0x47, 0x0a, 0x0c, 0x43, 0x72, 0x65, 0x61, 0x74, 0x65, 0x41, 0x75, 0x74, 0x68, 0x6f,
+	0x72, 0x12, 0x19, 0x2e, 0x62, 0x6c, 0x6f, 0x67, 0x2e, 0x43, 0x72, 0x65, 0x61, 0x74, 0x65, 0x41,
+	0x75, 0x74, 0x68, 0x6f, 0x72, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x1a, 0x2e, 0x62,
+	0x6c, 0x6f, 0x67, 0x2e, 0x43, 0x72, 0x65, 0x61, 0x74, 0x65, 0x41, 0x75, 0x74, 0x68, 0x6f, 0x72,
+	0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x00, 0x12, 0x41, 0x0a, 0x0a, 0x52, 0x65,
+	0x61, 0x64, 0x41, 0x75, 0x74, 0x68, 0x6f, 0x72, 0x12, 0x17, 0x2e, 0x62, 0x6c, 0x6f, 0x67, 0x2e,
+	0x52, 0x65, 0x61, 0x64, 0x41, 0x75, 0x74, 0x68, 0x6f, 0x72, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73,
+	0x74, 0x1a, 0x18, 0x2e, 0x62, 0x6c, 0x6f, 0x67, 0x2e, 0x52, 0x65, 0x61, 0x64, 0x41, 0x75, 0x74,
+	0x68, 0x6f, 0x72, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x00, 0x12, 0x47, 0x0a,
+	0x0c, 0x55, 0x70, 0x64, 0x61, 0x74, 0x65, 0x41, 0x75, 0x74, 0x68, 0x6f, 0x72, 0x12, 0x19, 0x2e,
+	0x62, 0x6c, 0x6f, 0x67, 0x2e, 0x55, 0x70, 0x64, 0x61, 0x74, 0x65, 0x41, 0x75, 0x74, 0x68, 0x6f,
+	0x72, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x1a, 0x2e, 0x62, 0x6c, 0x6f, 0x67, 0x2e,
+	0x55, 0x70, 0x64, 0x61, 0x74, 0x65, 0x41, 0x75, 0x74, 0x68, 0x6f, 0x72, 0x52, 0x65, 0x73, 0x70,
+	0x6f, 0x6e, 0x73, 0x65, 0x22, 0x00, 0x12, 0x47, 0x0a, 0x0c, 0x44, 0x65, 0x6c, 0x65, 0x74, 0x65,
+	0x41, 0x75, 0x74, 0x68, 0x6f, 0x72, 0x12, 0x19, 0x2e, 0x62, 0x6c, 0x6f, 0x67, 0x2e, 0x44, 0x65,
+	0x6c, 0x65, 0x74, 0x65, 0x41, 0x75, 0x74, 0x68, 0x6f, 0x72, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73,
+	0x74, 0x1a, 0x1a, 0x2e, 0x62, 0x6c, 0x6f, 0x67, 0x2e, 0x44, 0x65, 0x6c, 0x65, 0x74, 0x65, 0x41,
+	0x75, 0x74, 0x68, 0x6f, 0x72, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x00, 0x12,
+	0x43, 0x0a, 0x0a, 0x4c, 0x69, 0x73, 0x74, 0x41, 0x75, 0x74, 0x68, 0x6f, 0x72, 0x12, 0x17, 0x2e,
+	0x62, 0x6c, 0x6f, 0x67, 0x2e, 0x4c, 0x69, 0x73, 0x74, 0x41, 0x75, 0x74, 0x68, 0x6f, 0x72, 0x52,
+	0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x18, 0x2e, 0x62, 0x6c, 0x6f, 0x67, 0x2e, 0x4c, 0x69,
+	0x73, 0x74, 0x41, 0x75, 0x74, 0x68, 0x6f, 0x72, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65,
+	0x22, 0x00, 0x30, 0x01, 0x42, 0x0c, 0x5a, 0x0a, 0x73, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x2f,
+	0x70, 0x62, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
 var (
@@ -717,20 +1245,30 @@ func file_blogs_proto_rawDescGZIP() []byte {
 	return file_blogs_proto_rawDescData
 }
 
-var file_blogs_proto_msgTypes = make([]protoimpl.MessageInfo, 12)
+var file_blogs_proto_msgTypes = make([]protoimpl.MessageInfo, 22)
 var file_blogs_proto_goTypes = []interface{}{
-	(*Author)(nil),             // 0: blog.Author
-	(*Blog)(nil),               // 1: blog.Blog
-	(*CreateBlogRequest)(nil),  // 2: blog.CreateBlogRequest
-	(*CreateBlogResponse)(nil), // 3: blog.CreateBlogResponse
-	(*ReadBlogRequest)(nil),    // 4: blog.ReadBlogRequest
-	(*ReadBlogResponse)(nil),   // 5: blog.ReadBlogResponse
-	(*UpdateBlogRequest)(nil),  // 6: blog.UpdateBlogRequest
-	(*UpdateBlogResponse)(nil), // 7: blog.UpdateBlogResponse
-	(*DeleteBlogRequest)(nil),  // 8: blog.DeleteBlogRequest
-	(*DeleteBlogResponse)(nil), // 9: blog.DeleteBlogResponse
-	(*ListBlogRequest)(nil),    // 10: blog.ListBlogRequest
-	(*ListBlogResponse)(nil),   // 11: blog.ListBlogResponse
+	(*Author)(nil),               // 0: blog.Author
+	(*Blog)(nil),                 // 1: blog.Blog
+	(*CreateBlogRequest)(nil),    // 2: blog.CreateBlogRequest
+	(*CreateBlogResponse)(nil),   // 3: blog.CreateBlogResponse
+	(*ReadBlogRequest)(nil),      // 4: blog.ReadBlogRequest
+	(*ReadBlogResponse)(nil),     // 5: blog.ReadBlogResponse
+	(*UpdateBlogRequest)(nil),    // 6: blog.UpdateBlogRequest
+	(*UpdateBlogResponse)(nil),   // 7: blog.UpdateBlogResponse
+	(*DeleteBlogRequest)(nil),    // 8: blog.DeleteBlogRequest
+	(*DeleteBlogResponse)(nil),   // 9: blog.DeleteBlogResponse
+	(*ListBlogRequest)(nil),      // 10: blog.ListBlogRequest
+	(*ListBlogResponse)(nil),     // 11: blog.ListBlogResponse
+	(*CreateAuthorRequest)(nil),  // 12: blog.CreateAuthorRequest
+	(*CreateAuthorResponse)(nil), // 13: blog.CreateAuthorResponse
+	(*ReadAuthorRequest)(nil),    // 14: blog.ReadAuthorRequest
+	(*ReadAuthorResponse)(nil),   // 15: blog.ReadAuthorResponse
+	(*UpdateAuthorRequest)(nil),  // 16: blog.UpdateAuthorRequest
+	(*UpdateAuthorResponse)(nil), // 17: blog.UpdateAuthorResponse
+	(*DeleteAuthorRequest)(nil),  // 18: blog.DeleteAuthorRequest
+	(*DeleteAuthorResponse)(nil), // 19: blog.DeleteAuthorResponse
+	(*ListAuthorRequest)(nil),    // 20: blog.ListAuthorRequest
+	(*ListAuthorResponse)(nil),   // 21: blog.ListAuthorResponse
 }
 var file_blogs_proto_depIdxs = []int32{
 	1,  // 0: blog.CreateBlogRequest.blog:type_name -> blog.Blog
@@ -739,21 +1277,37 @@ var file_blogs_proto_depIdxs = []int32{
 	1,  // 3: blog.UpdateBlogRequest.blog:type_name -> blog.Blog
 	1,  // 4: blog.UpdateBlogResponse.blog:type_name -> blog.Blog
 	1,  // 5: blog.ListBlogResponse.blog:type_name -> blog.Blog
-	2,  // 6: blog.BlogSystem.CreateBlog:input_type -> blog.CreateBlogRequest
-	4,  // 7: blog.BlogSystem.ReadBlog:input_type -> blog.ReadBlogRequest
-	6,  // 8: blog.BlogSystem.UpdateBlog:input_type -> blog.UpdateBlogRequest
-	8,  // 9: blog.BlogSystem.DeleteBlog:input_type -> blog.DeleteBlogRequest
-	10, // 10: blog.BlogSystem.ListBlog:input_type -> blog.ListBlogRequest
-	3,  // 11: blog.BlogSystem.CreateBlog:output_type -> blog.CreateBlogResponse
-	5,  // 12: blog.BlogSystem.ReadBlog:output_type -> blog.ReadBlogResponse
-	7,  // 13: blog.BlogSystem.UpdateBlog:output_type -> blog.UpdateBlogResponse
-	9,  // 14: blog.BlogSystem.DeleteBlog:output_type -> blog.DeleteBlogResponse
-	11, // 15: blog.BlogSystem.ListBlog:output_type -> blog.ListBlogResponse
-	11, // [11:16] is the sub-list for method output_type
-	6,  // [6:11] is the sub-list for method input_type
-	6,  // [6:6] is the sub-list for extension type_name
-	6,  // [6:6] is the sub-list for extension extendee
-	0,  // [0:6] is the sub-list for field type_name
+	0,  // 6: blog.CreateAuthorRequest.author:type_name -> blog.Author
+	0,  // 7: blog.CreateAuthorResponse.author:type_name -> blog.Author
+	0,  // 8: blog.ReadAuthorResponse.author:type_name -> blog.Author
+	0,  // 9: blog.UpdateAuthorRequest.author:type_name -> blog.Author
+	0,  // 10: blog.UpdateAuthorResponse.author:type_name -> blog.Author
+	0,  // 11: blog.ListAuthorResponse.author:type_name -> blog.Author
+	2,  // 12: blog.BlogSystem.CreateBlog:input_type -> blog.CreateBlogRequest
+	4,  // 13: blog.BlogSystem.ReadBlog:input_type -> blog.ReadBlogRequest
+	6,  // 14: blog.BlogSystem.UpdateBlog:input_type -> blog.UpdateBlogRequest
+	8,  // 15: blog.BlogSystem.DeleteBlog:input_type -> blog.DeleteBlogRequest
+	10, // 16: blog.BlogSystem.ListBlog:input_type -> blog.ListBlogRequest
+	12, // 17: blog.AuthorSystem.CreateAuthor:input_type -> blog.CreateAuthorRequest
+	14, // 18: blog.AuthorSystem.ReadAuthor:input_type -> blog.ReadAuthorRequest
+	16, // 19: blog.AuthorSystem.UpdateAuthor:input_type -> blog.UpdateAuthorRequest
+	18, // 20: blog.AuthorSystem.DeleteAuthor:input_type -> blog.DeleteAuthorRequest
+	20, // 21: blog.AuthorSystem.ListAuthor:input_type -> blog.ListAuthorRequest
+	3,  // 22: blog.BlogSystem.CreateBlog:output_type -> blog.CreateBlogResponse
+	5,  // 23: blog.BlogSystem.ReadBlog:output_type -> blog.ReadBlogResponse
+	7,  // 24: blog.BlogSystem.UpdateBlog:output_type -> blog.UpdateBlogResponse
+	9,  // 25: blog.BlogSystem.DeleteBlog:output_type -> blog.DeleteBlogResponse
+	11, // 26: blog.BlogSystem.ListBlog:output_type -> blog.ListBlogResponse
+	13, // 27: blog.AuthorSystem.CreateAuthor:output_type -> blog.CreateAuthorResponse
+	15, // 28: blog.AuthorSystem.ReadAuthor:output_type -> blog.ReadAuthorResponse
+	17, // 29: blog.AuthorSystem.UpdateAuthor:output_type -> blog.UpdateAuthorResponse
+	19, // 30: blog.AuthorSystem.DeleteAuthor:output_type -> blog.DeleteAuthorResponse
+	21, // 31: blog.AuthorSystem.ListAuthor:output_type -> blog.ListAuthorResponse
+	22, // [22:32] is the sub-list for method output_type
+	12, // [12:22] is the sub-list for method input_type
+	12, // [12:12] is the sub-list for extension type_name
+	12, // [12:12] is the sub-list for extension extendee
+	0,  // [0:12] is the sub-list for field type_name
 }
 
 func init() { file_blogs_proto_init() }
@@ -906,6 +1460,126 @@ func file_blogs_proto_init() {
 				return nil
 			}
 		}
+		file_blogs_proto_msgTypes[12].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*CreateAuthorRequest); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_blogs_proto_msgTypes[13].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*CreateAuthorResponse); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_blogs_proto_msgTypes[14].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*ReadAuthorRequest); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_blogs_proto_msgTypes[15].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*ReadAuthorResponse); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_blogs_proto_msgTypes[16].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*UpdateAuthorRequest); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_blogs_proto_msgTypes[17].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*UpdateAuthorResponse); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_blogs_proto_msgTypes[18].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*DeleteAuthorRequest); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_blogs_proto_msgTypes[19].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*DeleteAuthorResponse); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_blogs_proto_msgTypes[20].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*ListAuthorRequest); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_blogs_proto_msgTypes[21].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*ListAuthorResponse); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
 	}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
@@ -913,7 +1587,7 @@ func file_blogs_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_blogs_proto_rawDesc,
 			NumEnums:      0,
-			NumMessages:   12,
+			NumMessages:   22,
 			NumExtensions: 0,
 			NumServices:   2,
 		},
@@ -1183,6 +1857,11 @@ var _BlogSystem_serviceDesc = grpc.ServiceDesc{
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://godoc.org/google.golang.org/grpc#ClientConn.NewStream.
 type AuthorSystemClient interface {
+	CreateAuthor(ctx context.Context, in *CreateAuthorRequest, opts ...grpc.CallOption) (*CreateAuthorResponse, error)
+	ReadAuthor(ctx context.Context, in *ReadAuthorRequest, opts ...grpc.CallOption) (*ReadAuthorResponse, error)
+	UpdateAuthor(ctx context.Context, in *UpdateAuthorRequest, opts ...grpc.CallOption) (*UpdateAuthorResponse, error)
+	DeleteAuthor(ctx context.Context, in *DeleteAuthorRequest, opts ...grpc.CallOption) (*DeleteAuthorResponse, error)
+	ListAuthor(ctx context.Context, in *ListAuthorRequest, opts ...grpc.CallOption) (AuthorSystem_ListAuthorClient, error)
 }
 
 type authorSystemClient struct {
@@ -1193,22 +1872,227 @@ func NewAuthorSystemClient(cc grpc.ClientConnInterface) AuthorSystemClient {
 	return &authorSystemClient{cc}
 }
 
+func (c *authorSystemClient) CreateAuthor(ctx context.Context, in *CreateAuthorRequest, opts ...grpc.CallOption) (*CreateAuthorResponse, error) {
+	out := new(CreateAuthorResponse)
+	err := c.cc.Invoke(ctx, "/blog.AuthorSystem/CreateAuthor", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *authorSystemClient) ReadAuthor(ctx context.Context, in *ReadAuthorRequest, opts ...grpc.CallOption) (*ReadAuthorResponse, error) {
+	out := new(ReadAuthorResponse)
+	err := c.cc.Invoke(ctx, "/blog.AuthorSystem/ReadAuthor", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *authorSystemClient) UpdateAuthor(ctx context.Context, in *UpdateAuthorRequest, opts ...grpc.CallOption) (*UpdateAuthorResponse, error) {
+	out := new(UpdateAuthorResponse)
+	err := c.cc.Invoke(ctx, "/blog.AuthorSystem/UpdateAuthor", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *authorSystemClient) DeleteAuthor(ctx context.Context, in *DeleteAuthorRequest, opts ...grpc.CallOption) (*DeleteAuthorResponse, error) {
+	out := new(DeleteAuthorResponse)
+	err := c.cc.Invoke(ctx, "/blog.AuthorSystem/DeleteAuthor", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *authorSystemClient) ListAuthor(ctx context.Context, in *ListAuthorRequest, opts ...grpc.CallOption) (AuthorSystem_ListAuthorClient, error) {
+	stream, err := c.cc.NewStream(ctx, &_AuthorSystem_serviceDesc.Streams[0], "/blog.AuthorSystem/ListAuthor", opts...)
+	if err != nil {
+		return nil, err
+	}
+	x := &authorSystemListAuthorClient{stream}
+	if err := x.ClientStream.SendMsg(in); err != nil {
+		return nil, err
+	}
+	if err := x.ClientStream.CloseSend(); err != nil {
+		return nil, err
+	}
+	return x, nil
+}
+
+type AuthorSystem_ListAuthorClient interface {
+	Recv() (*ListAuthorResponse, error)
+	grpc.ClientStream
+}
+
+type authorSystemListAuthorClient struct {
+	grpc.ClientStream
+}
+
+func (x *authorSystemListAuthorClient) Recv() (*ListAuthorResponse, error) {
+	m := new(ListAuthorResponse)
+	if err := x.ClientStream.RecvMsg(m); err != nil {
+		return nil, err
+	}
+	return m, nil
+}
+
 // AuthorSystemServer is the server API for AuthorSystem service.
 type AuthorSystemServer interface {
+	CreateAuthor(context.Context, *CreateAuthorRequest) (*CreateAuthorResponse, error)
+	ReadAuthor(context.Context, *ReadAuthorRequest) (*ReadAuthorResponse, error)
+	UpdateAuthor(context.Context, *UpdateAuthorRequest) (*UpdateAuthorResponse, error)
+	DeleteAuthor(context.Context, *DeleteAuthorRequest) (*DeleteAuthorResponse, error)
+	ListAuthor(*ListAuthorRequest, AuthorSystem_ListAuthorServer) error
 }
 
 // UnimplementedAuthorSystemServer can be embedded to have forward compatible implementations.
 type UnimplementedAuthorSystemServer struct {
 }
 
+func (*UnimplementedAuthorSystemServer) CreateAuthor(context.Context, *CreateAuthorRequest) (*CreateAuthorResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CreateAuthor not implemented")
+}
+func (*UnimplementedAuthorSystemServer) ReadAuthor(context.Context, *ReadAuthorRequest) (*ReadAuthorResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ReadAuthor not implemented")
+}
+func (*UnimplementedAuthorSystemServer) UpdateAuthor(context.Context, *UpdateAuthorRequest) (*UpdateAuthorResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdateAuthor not implemented")
+}
+func (*UnimplementedAuthorSystemServer) DeleteAuthor(context.Context, *DeleteAuthorRequest) (*DeleteAuthorResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DeleteAuthor not implemented")
+}
+func (*UnimplementedAuthorSystemServer) ListAuthor(*ListAuthorRequest, AuthorSystem_ListAuthorServer) error {
+	return status.Errorf(codes.Unimplemented, "method ListAuthor not implemented")
+}
+
 func RegisterAuthorSystemServer(s *grpc.Server, srv AuthorSystemServer) {
 	s.RegisterService(&_AuthorSystem_serviceDesc, srv)
+}
+
+func _AuthorSystem_CreateAuthor_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CreateAuthorRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AuthorSystemServer).CreateAuthor(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/blog.AuthorSystem/CreateAuthor",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AuthorSystemServer).CreateAuthor(ctx, req.(*CreateAuthorRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _AuthorSystem_ReadAuthor_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ReadAuthorRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AuthorSystemServer).ReadAuthor(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/blog.AuthorSystem/ReadAuthor",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AuthorSystemServer).ReadAuthor(ctx, req.(*ReadAuthorRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _AuthorSystem_UpdateAuthor_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UpdateAuthorRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AuthorSystemServer).UpdateAuthor(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/blog.AuthorSystem/UpdateAuthor",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AuthorSystemServer).UpdateAuthor(ctx, req.(*UpdateAuthorRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _AuthorSystem_DeleteAuthor_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DeleteAuthorRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AuthorSystemServer).DeleteAuthor(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/blog.AuthorSystem/DeleteAuthor",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AuthorSystemServer).DeleteAuthor(ctx, req.(*DeleteAuthorRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _AuthorSystem_ListAuthor_Handler(srv interface{}, stream grpc.ServerStream) error {
+	m := new(ListAuthorRequest)
+	if err := stream.RecvMsg(m); err != nil {
+		return err
+	}
+	return srv.(AuthorSystemServer).ListAuthor(m, &authorSystemListAuthorServer{stream})
+}
+
+type AuthorSystem_ListAuthorServer interface {
+	Send(*ListAuthorResponse) error
+	grpc.ServerStream
+}
+
+type authorSystemListAuthorServer struct {
+	grpc.ServerStream
+}
+
+func (x *authorSystemListAuthorServer) Send(m *ListAuthorResponse) error {
+	return x.ServerStream.SendMsg(m)
 }
 
 var _AuthorSystem_serviceDesc = grpc.ServiceDesc{
 	ServiceName: "blog.AuthorSystem",
 	HandlerType: (*AuthorSystemServer)(nil),
-	Methods:     []grpc.MethodDesc{},
-	Streams:     []grpc.StreamDesc{},
-	Metadata:    "blogs.proto",
+	Methods: []grpc.MethodDesc{
+		{
+			MethodName: "CreateAuthor",
+			Handler:    _AuthorSystem_CreateAuthor_Handler,
+		},
+		{
+			MethodName: "ReadAuthor",
+			Handler:    _AuthorSystem_ReadAuthor_Handler,
+		},
+		{
+			MethodName: "UpdateAuthor",
+			Handler:    _AuthorSystem_UpdateAuthor_Handler,
+		},
+		{
+			MethodName: "DeleteAuthor",
+			Handler:    _AuthorSystem_DeleteAuthor_Handler,
+		},
+	},
+	Streams: []grpc.StreamDesc{
+		{
+			StreamName:    "ListAuthor",
+			Handler:       _AuthorSystem_ListAuthor_Handler,
+			ServerStreams: true,
+		},
+	},
+	Metadata: "blogs.proto",
 }

@@ -59,6 +59,46 @@ message ListBlogResponse {
   Blog blog=1;
 }
 
+message CreateAuthorRequest{
+  Author author=1;
+}
+
+message CreateAuthorResponse{
+  Author author=1;
+}
+
+message ReadAuthorRequest{
+  string author_id=1;
+}
+
+message ReadAuthorResponse{
+  Author author=1;
+}
+
+message UpdateAuthorRequest {
+  Author author=1;
+}
+
+message UpdateAuthorResponse{
+  Author author=1;
+}
+
+message DeleteAuthorRequest{
+  string author_id=1;
+}
+
+message DeleteAuthorResponse{
+  string author_id=1;
+}
+
+message ListAuthorRequest{
+  uint32 author_signal=1;
+}
+
+message ListAuthorResponse{
+  Author author=1;
+}
+
 // BlogSystem use for registering any RPC service that related to Blog System
 service BlogSystem {
   rpc CreateBlog(CreateBlogRequest) returns (CreateBlogResponse) {};
@@ -70,5 +110,9 @@ service BlogSystem {
 
 // AuthorSystem use for registering any RPC service that related to Author System
 service AuthorSystem {
-
+  rpc CreateAuthor(CreateAuthorRequest) returns (CreateAuthorResponse) {};
+  rpc ReadAuthor(ReadAuthorRequest) returns (ReadAuthorResponse) {};
+  rpc UpdateAuthor(UpdateAuthorRequest) returns (UpdateAuthorResponse) {};
+  rpc DeleteAuthor(DeleteAuthorRequest) returns (DeleteAuthorResponse) {};
+  rpc ListAuthor(ListAuthorRequest) returns (stream ListAuthorResponse) {};
 }

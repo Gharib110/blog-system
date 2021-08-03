@@ -52,6 +52,7 @@ func runServer() error {
 	defer srv.Stop()
 
 	pb.RegisterBlogSystemServer(srv, &BlogSystem{})
+	pb.RegisterAuthorSystemServer(srv, &AuthorSystem{})
 
 	aC = &Config{
 		MongoDB: &db.MDatabase{
