@@ -3,7 +3,9 @@ package api
 import (
 	"encoding/json"
 	"github.com/DapperBlondie/blog-system/src/cmd/client/models"
+	"github.com/DapperBlondie/blog-system/src/service/pb"
 	zerolog "github.com/rs/zerolog/log"
+	"google.golang.org/grpc"
 	"net/http"
 )
 
@@ -12,19 +14,18 @@ type RestConf struct {
 	Mongo *MongoTools
 }
 
-var conf *RestConf
+// ClientConfig useful for holding the client configuration objects
+type ClientConfig struct {
+	ClientConn *grpc.ClientConn
+	BlogClient pb.BlogSystemClient
+	RestConfig *RestConf
+}
 
-// NewRestConf use for creating the configuration structure for Rest-Api server
-func NewRestConf(rc *RestConf) *RestConf {
-	conf = &RestConf{
-		Mongo: &MongoTools{
-			MSession:    rc.Mongo.MSession,
-			Mdb:         rc.Mongo.Mdb,
-			MCollection: rc.Mongo.MCollection,
-		},
-	}
+var conf *ClientConfig
 
-	return conf
+// NewClientConfig use for creating the configuration structure for whole RPC Client
+func NewClientConfig(rc *ClientConfig) {
+	conf = rc
 }
 
 // WriteToRestClient a helper function for writing our json response to rest client
@@ -47,7 +48,7 @@ func WriteToRestClient(w http.ResponseWriter, code int, resp *models.BlogItemPay
 }
 
 // StatusHandler just use for showing the status of our API
-func (rcf *RestConf) StatusHandler(w http.ResponseWriter, r *http.Request) {
+func (cc *ClientConfig) StatusHandler(w http.ResponseWriter, r *http.Request) {
 	if r.Method == "GET" {
 		http.Error(w, r.Method+"; We need GET request", http.StatusMethodNotAllowed)
 		return
@@ -71,18 +72,27 @@ func (rcf *RestConf) StatusHandler(w http.ResponseWriter, r *http.Request) {
 	return
 }
 
-func (rcf *RestConf) InsertBlogHandler(w http.ResponseWriter, r *http.Request) {
+func (cc *ClientConfig) InsertBlogHandler(w http.ResponseWriter, r *http.Request) {
 
 }
 
-func (rcf *RestConf) GetBlogHandler(w http.ResponseWriter, r *http.Request) {
+func (cc *ClientConfig) GetBlogHandler(w http.ResponseWriter, r *http.Request) {
+	if r.Method != "POST" {
+		http.Error(w, "Maybe method GET provided", http.StatusMethodNotAllowed)
+		return
+	}
+	//id := chi.URLParamFromCtx(r.Context(), "id")
 
 }
 
-func (rcf *RestConf) GetAuthorByIDHandler(w http.ResponseWriter, r *http.Request) {
+func (cc *ClientConfig) GetAuthorByIDHandler(w http.ResponseWriter, r *http.Request) {
 
 }
 
-func (rcf *RestConf) InsertAuthorHandler(w http.ResponseWriter, r *http.Request) {
+func (cc *ClientConfig) InsertAuthorHandler(w http.ResponseWriter, r *http.Request) {
+
+}
+
+func (cc *ClientConfig) GetAllBlogsHandler(w http.ResponseWriter, r *http.Request) {
 
 }
