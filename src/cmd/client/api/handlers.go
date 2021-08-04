@@ -4,9 +4,12 @@ import (
 	"encoding/json"
 	"github.com/DapperBlondie/blog-system/src/cmd/client/models"
 	"github.com/DapperBlondie/blog-system/src/service/pb"
+	"github.com/go-chi/chi"
 	zerolog "github.com/rs/zerolog/log"
 	"google.golang.org/grpc"
+	"gopkg.in/mgo.v2/bson"
 	"net/http"
+	"reflect"
 )
 
 // RestConf holding our rest api configurations
@@ -28,20 +31,31 @@ func NewClientConfig(rc *ClientConfig) {
 	conf = rc
 }
 
-// WriteToRestClient a helper function for writing our json response to rest client
-func WriteToRestClient(w http.ResponseWriter, code int, resp *models.BlogItemPayload) error {
-	out, err := json.MarshalIndent(resp, "", "\t")
-	if err != nil {
-		zerolog.Error().Msg(err.Error())
-		return err
-	}
+// WriteResponseToUser a helper function for writing our json response to user
+func WriteResponseToUser(w http.ResponseWriter, code int, resp interface{}) error {
+	respType := reflect.TypeOf(resp).Elem()
+	if respType.Kind() == reflect.Struct {
+		out, err := json.MarshalIndent(resp, "", "\t")
+		if err != nil {
+			zerolog.Error().Msg(err.Error())
+			return err
+		}
 
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(code)
-	_, err = w.Write(out)
-	if err != nil {
-		zerolog.Error().Msg(err.Error())
-		return err
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(code)
+		_, err = w.Write(out)
+		if err != nil {
+			zerolog.Error().Msg(err.Error())
+			return err
+		}
+	} else if respType.Kind() == reflect.String {
+		w.Header().Set("Content-Type", "application/text")
+		w.WriteHeader(code)
+		_, err := w.Write([]byte(resp.(string)))
+		if err != nil {
+			zerolog.Error().Msg(err.Error())
+			return err
+		}
 	}
 
 	return nil
@@ -76,13 +90,39 @@ func (cc *ClientConfig) InsertBlogHandler(w http.ResponseWriter, r *http.Request
 
 }
 
+// GetBlogHandler a rest api handler for get a blog by its own ID
 func (cc *ClientConfig) GetBlogHandler(w http.ResponseWriter, r *http.Request) {
 	if r.Method != "POST" {
 		http.Error(w, "Maybe method GET provided", http.StatusMethodNotAllowed)
 		return
 	}
-	//id := chi.URLParamFromCtx(r.Context(), "id")
+	id := chi.URLParamFromCtx(r.Context(), "id")
 
+	respBlog, err := cc.ReadBlogs(id)
+	if err != nil {
+		zerolog.Error().Msg(err.Error())
+		resp := &models.Status{Ok: http.StatusInternalServerError, Message: err.Error()}
+		err = WriteResponseToUser(w, http.StatusInternalServerError, resp)
+		if err != nil {
+			zerolog.Error().Msg(err.Error())
+			return
+		}
+		return
+	}
+
+	resp := &models.BlogItemPayload{
+		ID:       bson.ObjectId(respBlog.GetBlog().GetId()),
+		AuthorID: respBlog.GetBlog().GetAuthorId(),
+		Content:  respBlog.GetBlog().GetContent(),
+		Title:    respBlog.GetBlog().GetTitle(),
+	}
+	err = WriteResponseToUser(w, http.StatusOK, resp)
+	if err != nil {
+		zerolog.Error().Msg(err.Error())
+		return
+	}
+
+	return
 }
 
 func (cc *ClientConfig) GetAuthorByIDHandler(w http.ResponseWriter, r *http.Request) {

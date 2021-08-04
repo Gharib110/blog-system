@@ -13,9 +13,9 @@ import (
 // CreateBlogs use for creating blog in out gRPC Server
 func (cc *ClientConfig) CreateBlogs(bp *models.BlogItemPayload) (*pb.CreateBlogResponse, error) {
 	blog := &pb.CreateBlogRequest{Blog: &pb.Blog{
-		AuthorId: "",
-		Title:    "Hello Gopher",
-		Content:  "Hey Gopher, Golang is so fantastic !\nGood Job",
+		AuthorId: bp.AuthorID,
+		Title:    bp.Title,
+		Content:  bp.Content,
 	}}
 
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second*10)
