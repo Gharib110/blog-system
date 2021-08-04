@@ -217,34 +217,3 @@ func (cc *ClientConfig) GetAllBlogs(num uint32) ([]*pb.ListBlogResponse, error) 
 	}
 
 }
-
-// Testing Creating blog
-//resp, err := clientConfig.CreateBlogs()
-//if err != nil {
-//	return
-//}
-//fmt.Println(resp)
-
-// Testing Reading blog with _id
-//blog, err := clientConfig.ReadBlogs("61065b241d06c4042c5cb97f")
-//if err != nil {
-//	zerolog.Error().Msg(err.Error())
-//	return
-//}
-//fmt.Println(blog)
-
-//blog, err := clientConfig.DeleteBlogs("6105aaf01d06c4047ca3ff0d")
-//if err != nil {
-//	return
-//}
-//fmt.Println(blog)
-
-//blogs, err := clientConfig.GetAllBlogs(5)
-//if err == io.EOF {
-//	zerolog.Error().Msg(err.Error())
-//	fmt.Println(blogs)
-//	return
-//} else if err != nil {
-//	zerolog.Error().Msg(err.Error())
-//	return
-//}
