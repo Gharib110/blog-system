@@ -72,22 +72,52 @@ func (cc *ClientConfig) StatusHandler(w http.ResponseWriter, r *http.Request) {
 		Ok:      http.StatusOK,
 		Message: "Everything is Alright !",
 	}
-
-	out, err := json.MarshalIndent(resp, "", "\t")
+	err := WriteResponseToUser(w, http.StatusOK, resp)
 	if err != nil {
 		zerolog.Error().Msg(err.Error())
 		return
 	}
 
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(http.StatusOK)
-
-	_, err = w.Write(out)
 	return
 }
 
+// InsertBlogHandler a rest api handler for inserting a blog
 func (cc *ClientConfig) InsertBlogHandler(w http.ResponseWriter, r *http.Request) {
+	if r.Method != "GET" {
+		http.Error(w, "Maybe method GET provided", http.StatusMethodNotAllowed)
+		return
+	}
 
+	payload := &models.BlogItemPayload{}
+	err := json.NewDecoder(r.Body).Decode(payload)
+	if err != nil {
+		zerolog.Error().Msg(err.Error())
+		resp := &models.Status{Ok: http.StatusInternalServerError, Message: err.Error()}
+		err = WriteResponseToUser(w, http.StatusInternalServerError, resp)
+		if err != nil {
+			zerolog.Error().Msg(err.Error())
+			return
+		}
+	}
+
+	createdBlog, err := cc.CreateBlogs(payload)
+	if err != nil {
+		zerolog.Error().Msg(err.Error())
+		resp := &models.Status{Ok: http.StatusInternalServerError, Message: err.Error()}
+		err = WriteResponseToUser(w, http.StatusInternalServerError, resp)
+		if err != nil {
+			zerolog.Error().Msg(err.Error())
+			return
+		}
+		return
+	}
+	payload.ID = bson.ObjectIdHex(createdBlog.Blog.Id)
+	err = WriteResponseToUser(w, http.StatusOK, payload)
+	if err != nil {
+		zerolog.Error().Msg(err.Error())
+		return
+	}
+	return
 }
 
 // GetBlogHandler a rest api handler for get a blog by its own ID

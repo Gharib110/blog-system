@@ -12,10 +12,10 @@ func Routes() http.Handler {
 	mux.Use(conf.enableCORS)
 	mux.Get("/create-blog", conf.StatusHandler)
 
-	mux.Post("/insert-blog", conf.InsertBlogHandler)
+	mux.Post("/insert-blog", conf.InsertBlogHandler) // Implemented
 	mux.Post("/insert-author", conf.InsertAuthorHandler)
 
-	mux.Get("/get-blog/{id}", conf.GetBlogHandler)
+	mux.Get("/get-blog/{id}", conf.GetBlogHandler) // Implemented
 	mux.Get("/get-all-blog", conf.GetAllBlogsHandler)
 	mux.Get("/get-author/{id}", conf.GetAuthorByIDHandler)
 
