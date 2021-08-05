@@ -10,6 +10,7 @@ import (
 	"gopkg.in/mgo.v2/bson"
 	"net/http"
 	"reflect"
+	"strconv"
 )
 
 // RestConf holding our rest api configurations
@@ -155,14 +156,61 @@ func (cc *ClientConfig) GetBlogHandler(w http.ResponseWriter, r *http.Request) {
 	return
 }
 
-func (cc *ClientConfig) GetAuthorByIDHandler(w http.ResponseWriter, r *http.Request) {
-
-}
-
-func (cc *ClientConfig) InsertAuthorHandler(w http.ResponseWriter, r *http.Request) {
-
-}
-
+// GetAllBlogsHandler use for getting all blogs from gRPC
 func (cc *ClientConfig) GetAllBlogsHandler(w http.ResponseWriter, r *http.Request) {
+	if r.Method != "POST" {
+		http.Error(w, "Maybe method GET provided", http.StatusMethodNotAllowed)
+		return
+	}
+	numStr := chi.URLParamFromCtx(r.Context(), "num")
+	num, err := strconv.Atoi(numStr)
+	if err != nil {
+		zerolog.Error().Msg(err.Error())
+		errResp := &models.Status{
+			Ok:      http.StatusInternalServerError,
+			Message: err.Error(),
+		}
+		err := WriteResponseToUser(w, http.StatusInternalServerError, errResp)
+		if err != nil {
+			zerolog.Error().Msg(err.Error())
+			return
+		}
+	}
 
+	respBlogs, err := cc.GetAllBlogs(uint32(num))
+	if err != nil {
+		zerolog.Error().Msg(err.Error())
+		errResp := &models.Status{
+			Ok:      http.StatusInternalServerError,
+			Message: err.Error(),
+		}
+		err := WriteResponseToUser(w, http.StatusInternalServerError, errResp)
+		if err != nil {
+			zerolog.Error().Msg(err.Error())
+			return
+		}
+		return
+	}
+
+	blogs := &models.AllBlogsPayload{
+		Blogs: []*models.BlogItemPayload{},
+	}
+
+	blog := &models.BlogItemPayload{
+		ID:       "",
+		AuthorID: "",
+		Content:  "",
+		Title:    "",
+	}
+	for _, respBlog := range respBlogs {
+		blog.Title = respBlog.Blog.Title
+		blog.Content = respBlog.Blog.Content
+		blog.AuthorID = respBlog.Blog.AuthorId
+		blog.ID = bson.ObjectIdHex(respBlog.Blog.Id)
+
+		blogs.Blogs = append(blogs.Blogs, blog)
+	}
+	err = WriteResponseToUser(w, http.StatusOK, blogs)
+
+	return
 }

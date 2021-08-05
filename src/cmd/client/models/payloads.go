@@ -1,6 +1,8 @@
 package models
 
-import "gopkg.in/mgo.v2/bson"
+import (
+	"gopkg.in/mgo.v2/bson"
+)
 
 // BlogItemPayload use for handling the POST request payloads
 type BlogItemPayload struct {
@@ -8,6 +10,11 @@ type BlogItemPayload struct {
 	AuthorID string        `json:"author_id" bson:"author_id"`
 	Content  string        `json:"content" bson:"content"`
 	Title    string        `json:"title" bson:"title"`
+}
+
+// AllBlogsPayload use for holding multiple blogs for our response
+type AllBlogsPayload struct {
+	Blogs []*BlogItemPayload `json:"blogs"`
 }
 
 // AuthorPayload use for handling the POST request payloads

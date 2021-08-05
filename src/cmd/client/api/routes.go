@@ -13,11 +13,9 @@ func Routes() http.Handler {
 	mux.Get("/create-blog", conf.StatusHandler)
 
 	mux.Post("/insert-blog", conf.InsertBlogHandler) // Implemented
-	mux.Post("/insert-author", conf.InsertAuthorHandler)
 
 	mux.Get("/get-blog/{id}", conf.GetBlogHandler) // Implemented
-	mux.Get("/get-all-blog", conf.GetAllBlogsHandler)
-	mux.Get("/get-author/{id}", conf.GetAuthorByIDHandler)
+	mux.Get("/get-all-blog/{num}", conf.GetAllBlogsHandler)
 
 	return mux
 }

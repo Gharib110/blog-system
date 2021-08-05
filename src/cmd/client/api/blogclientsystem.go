@@ -90,7 +90,7 @@ func (cc *ClientConfig) GetAllBlogs(num uint32) ([]*pb.ListBlogResponse, error) 
 	req := &pb.ListBlogRequest{BlogSignal: num}
 	lstBlogs := []*pb.ListBlogResponse{}
 
-	ctx, cancel := context.WithTimeout(context.Background(), time.Hour*10)
+	ctx, cancel := context.WithTimeout(context.Background(), time.Second*30)
 	defer cancel()
 
 	stream, err := cc.BlogClient.ListBlog(ctx, req)
