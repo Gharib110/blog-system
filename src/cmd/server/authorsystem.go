@@ -1,9 +1,5 @@
 package main
 
-/*
-	AuthorSystem will be implemented like BlogSystem
-*/
-
 import (
 	"context"
 	"github.com/DapperBlondie/blog-system/src/service/pb"
