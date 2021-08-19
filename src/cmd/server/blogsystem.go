@@ -65,7 +65,7 @@ func (b *BlogSystem) ListBlog(r *pb.ListBlogRequest, stream pb.BlogSystem_ListBl
 			}
 		}
 
-		aC.okChan <- true
+		aC.OkChan <- true
 		return
 	}()
 
@@ -75,7 +75,7 @@ func (b *BlogSystem) ListBlog(r *pb.ListBlogRequest, stream pb.BlogSystem_ListBl
 		return status.Error(status.Code(err), "; An internal error occurred in streaming cause of stream.Context ")
 	case err := <-aC.SignalChan:
 		return err
-	case <-aC.okChan:
+	case <-aC.OkChan:
 		return nil
 	}
 }
@@ -94,7 +94,7 @@ func (b *BlogSystem) DeleteBlog(ctx context.Context, r *pb.DeleteBlogRequest) (*
 			return
 		}
 
-		aC.okChan <- true
+		aC.OkChan <- true
 		return
 	}()
 
@@ -104,7 +104,7 @@ func (b *BlogSystem) DeleteBlog(ctx context.Context, r *pb.DeleteBlogRequest) (*
 		return nil, status.Error(status.Code(err), err.Error())
 	case err := <-aC.SignalChan:
 		return nil, status.Error(status.Code(err), err.Error())
-	case <-aC.okChan:
+	case <-aC.OkChan:
 		resp = &pb.DeleteBlogResponse{BlogId: r.GetBlogId()}
 		return resp, nil
 	}
@@ -129,9 +129,9 @@ func (b *BlogSystem) UpdateBlog(ctx context.Context, r *pb.UpdateBlogRequest) (*
 		blogItem.Content = r.GetBlog().GetContent()
 		blogItem.AuthorID = r.GetBlog().GetAuthorId()
 
-		aC.updateMutex.Lock()
+		aC.UpdateMutex.Lock()
 		err = aC.MongoDB.MCollections["blogs"].UpdateId(bson.M{"_id": bson.ObjectIdHex(r.GetBlog().GetId())}, blogItem)
-		aC.updateMutex.Unlock()
+		aC.UpdateMutex.Unlock()
 
 		if err != nil {
 			zerolog.Error().Msg(err.Error())
@@ -139,7 +139,7 @@ func (b *BlogSystem) UpdateBlog(ctx context.Context, r *pb.UpdateBlogRequest) (*
 			return
 		}
 
-		aC.okChan <- true
+		aC.OkChan <- true
 	}()
 
 	select {
@@ -148,7 +148,7 @@ func (b *BlogSystem) UpdateBlog(ctx context.Context, r *pb.UpdateBlogRequest) (*
 		return nil, status.Error(status.Code(err), err.Error())
 	case err := <-aC.SignalChan:
 		return nil, status.Error(status.Code(err), err.Error())
-	case <-aC.okChan:
+	case <-aC.OkChan:
 		respBlog = &pb.UpdateBlogResponse{Blog: &pb.Blog{
 			Id:       blogItem.ID.Hex(),
 			AuthorId: blogItem.AuthorID,
@@ -179,7 +179,7 @@ func (b *BlogSystem) ReadBlog(ctx context.Context, r *pb.ReadBlogRequest) (*pb.R
 			Content:  blogItem.Content,
 		}}
 
-		aC.okChan <- true
+		aC.OkChan <- true
 		return
 	}()
 
@@ -189,7 +189,7 @@ func (b *BlogSystem) ReadBlog(ctx context.Context, r *pb.ReadBlogRequest) (*pb.R
 		return nil, status.Error(status.Code(err), err.Error())
 	case err := <-aC.SignalChan:
 		return nil, status.Error(status.Code(err), err.Error())
-	case <-aC.okChan:
+	case <-aC.OkChan:
 		return respBlog, nil
 	}
 }
@@ -222,7 +222,7 @@ func (b *BlogSystem) CreateBlog(ctx context.Context, r *pb.CreateBlogRequest) (*
 			Content:  blog.Content,
 		}}
 
-		aC.okChan <- true
+		aC.OkChan <- true
 
 		return
 	}()
@@ -233,7 +233,7 @@ func (b *BlogSystem) CreateBlog(ctx context.Context, r *pb.CreateBlogRequest) (*
 		return nil, status.Error(status.Code(err), err.Error())
 	case err := <-aC.SignalChan:
 		return nil, err
-	case <-aC.okChan:
+	case <-aC.OkChan:
 		return respBlog, nil
 	}
 }

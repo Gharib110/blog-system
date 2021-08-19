@@ -16,8 +16,8 @@ import (
 type Config struct {
 	MongoDB     *db.MDatabase
 	SignalChan  chan error
-	okChan      chan bool
-	updateMutex *sync.Mutex
+	OkChan      chan bool
+	UpdateMutex *sync.Mutex
 	DeleteMutex *sync.Mutex
 }
 
@@ -31,6 +31,7 @@ func main() {
 	}
 }
 
+// runServer a function for setting and configuring server Config and other stuff
 func runServer() error {
 	listener, err := net.Listen("tcp", "localhost:50051")
 	if err != nil {
@@ -61,8 +62,8 @@ func runServer() error {
 			MCollections: make(map[string]*mgo.Collection),
 		},
 		SignalChan:  make(chan error, 10),
-		updateMutex: &sync.Mutex{},
-		okChan:      make(chan bool, 10),
+		UpdateMutex: &sync.Mutex{},
+		OkChan:      make(chan bool, 10),
 		DeleteMutex: &sync.Mutex{},
 	}
 
