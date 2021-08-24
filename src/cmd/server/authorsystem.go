@@ -6,11 +6,11 @@ import (
 	"sync"
 )
 
-type AuthorSystem struct{
+type AuthorSystem struct {
 	SignalChan  chan error
 	OkChan      chan bool
 	UpdateMutex *sync.RWMutex
-	DeleteMutex *sync.Mutex
+	DeleteMutex *sync.RWMutex
 }
 
 func (as *AuthorSystem) CreateAuthor(ctx context.Context, r *pb.CreateAuthorRequest) (*pb.CreateAuthorResponse, error) {

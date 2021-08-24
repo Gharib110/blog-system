@@ -14,13 +14,13 @@ import (
 
 // Config use for holding the gRPC server configuration objects
 type Config struct {
-	MongoDB     *db.MDatabase
+	MongoDB *db.MDatabase
 }
 
 var aC *Config
 
 func main() {
-	err := runServer()
+	err := setupServer()
 	if err != nil {
 		zerolog.Fatal().Msg(err.Error())
 		return
@@ -28,7 +28,7 @@ func main() {
 }
 
 // runServer a function for setting and configuring server Config and other stuff
-func runServer() error {
+func setupServer() error {
 	listener, err := net.Listen("tcp", "localhost:50051")
 	if err != nil {
 		zerolog.Error().Msg(err.Error() + "; Occurred in listening to :50051")
@@ -54,7 +54,12 @@ func runServer() error {
 		UpdateMutex: &sync.RWMutex{},
 		DeleteMutex: &sync.RWMutex{},
 	})
-	pb.RegisterAuthorSystemServer(srv, &AuthorSystem{})
+	pb.RegisterAuthorSystemServer(srv, &AuthorSystem{
+		SignalChan:  make(chan error),
+		OkChan:      make(chan bool),
+		UpdateMutex: &sync.RWMutex{},
+		DeleteMutex: &sync.RWMutex{},
+	})
 
 	aC = &Config{
 		MongoDB: &db.MDatabase{
