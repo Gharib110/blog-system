@@ -58,8 +58,38 @@ func (as *AuthorSystem) CreateAuthor(ctx context.Context, r *pb.CreateAuthorRequ
 	}
 }
 
+// ReadAuthor use for reading a db.Author with its own bson.ObjectId
 func (as *AuthorSystem) ReadAuthor(ctx context.Context, r *pb.ReadAuthorRequest) (*pb.ReadAuthorResponse, error) {
-	panic("implement me")
+	var rspAuthor *pb.ReadAuthorResponse
+	var authorItem *db.Author
+
+	go func() {
+		as.DeleteMutex.RLock()
+		err := aC.MongoDB.MCollections["blogs"].Find(bson.M{"_id": bson.ObjectIdHex(r.GetAuthorId())}).One(&authorItem)
+		as.DeleteMutex.RUnlock()
+		if err != nil {
+			zerolog.Error().Msg(err.Error())
+			as.SignalChan <- status.Error(codes.Internal, err.Error())
+			return
+		}
+		rspAuthor = &pb.ReadAuthorResponse{Author: &pb.Author{
+			Id:     r.GetAuthorId(),
+			Name:   authorItem.Name,
+			Career: authorItem.Career,
+		}}
+
+		as.OkChan <- true
+		return
+	}()
+
+	select {
+	case <-ctx.Done():
+		return nil, status.Error(status.Code(ctx.Err()), ctx.Err().Error())
+	case err := <-as.SignalChan:
+		return nil, err
+	case <-as.OkChan:
+		return rspAuthor, nil
+	}
 }
 
 func (as *AuthorSystem) UpdateAuthor(ctx context.Context, r *pb.UpdateAuthorRequest) (*pb.UpdateAuthorResponse, error) {
