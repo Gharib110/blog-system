@@ -9,10 +9,16 @@ import (
 	"google.golang.org/grpc/status"
 	"gopkg.in/mgo.v2"
 	"gopkg.in/mgo.v2/bson"
+	"sync"
 )
 
 // BlogSystem Holder of RPC methods for blogSystem service
-type BlogSystem struct{}
+type BlogSystem struct{
+	SignalChan  chan error
+	OkChan      chan bool
+	UpdateMutex *sync.RWMutex
+	DeleteMutex *sync.RWMutex
+}
 
 // ListBlog use for getting several blogs by specify the number of blogs that we want
 func (b *BlogSystem) ListBlog(r *pb.ListBlogRequest, stream pb.BlogSystem_ListBlogServer) error {
@@ -32,7 +38,9 @@ func (b *BlogSystem) ListBlog(r *pb.ListBlogRequest, stream pb.BlogSystem_ListBl
 	}
 
 	go func() {
+		b.UpdateMutex.RLock()
 		iterator := aC.MongoDB.MCollections["blogs"].Find(nil).Limit(int(r.GetBlogSignal())).Iter()
+		b.UpdateMutex.RUnlock()
 		defer func(iterator *mgo.Iter) {
 			err := iterator.Close()
 			if err != nil {
@@ -52,20 +60,20 @@ func (b *BlogSystem) ListBlog(r *pb.ListBlogRequest, stream pb.BlogSystem_ListBl
 				err := stream.Send(lsBlog)
 				if err != nil {
 					zerolog.Error().Msg(err.Error())
-					aC.SignalChan <- status.Error(status.Code(err), err.Error()+
+					b.SignalChan <- status.Error(status.Code(err), err.Error()+
 						"; An Internal Error occurred in sending response to client")
 
 					return
 				}
 			} else {
-				aC.SignalChan <- status.Error(codes.Internal, "Error in unmarshalling the data; Occurred in GetAllBlogs")
+				b.SignalChan <- status.Error(codes.Internal, "Error in unmarshalling the data; Occurred in GetAllBlogs")
 				zerolog.Error().Msg("Error in unmarshalling the data")
 
 				return
 			}
 		}
 
-		aC.OkChan <- true
+		b.OkChan <- true
 		return
 	}()
 
@@ -73,9 +81,9 @@ func (b *BlogSystem) ListBlog(r *pb.ListBlogRequest, stream pb.BlogSystem_ListBl
 	case <-stream.Context().Done():
 		err := stream.Context().Err()
 		return status.Error(status.Code(err), "; An internal error occurred in streaming cause of stream.Context ")
-	case err := <-aC.SignalChan:
+	case err := <-b.SignalChan:
 		return err
-	case <-aC.OkChan:
+	case <-b.OkChan:
 		return nil
 	}
 }
@@ -85,16 +93,16 @@ func (b *BlogSystem) DeleteBlog(ctx context.Context, r *pb.DeleteBlogRequest) (*
 	var resp *pb.DeleteBlogResponse
 
 	go func() {
-		aC.DeleteMutex.Lock()
+		b.DeleteMutex.Lock()
 		err := aC.MongoDB.MCollections["blogs"].Remove(bson.M{"_id": bson.ObjectIdHex(r.GetBlogId())})
-		aC.DeleteMutex.Unlock()
+		b.DeleteMutex.Unlock()
 		if err != nil {
 			zerolog.Error().Msg(err.Error() + "; Occurred in deleting a blog with ID")
-			aC.SignalChan <- status.Error(codes.Internal, err.Error())
+			b.SignalChan <- status.Error(codes.Internal, err.Error())
 			return
 		}
 
-		aC.OkChan <- true
+		b.OkChan <- true
 		return
 	}()
 
@@ -102,9 +110,9 @@ func (b *BlogSystem) DeleteBlog(ctx context.Context, r *pb.DeleteBlogRequest) (*
 	case <-ctx.Done():
 		err := ctx.Err()
 		return nil, status.Error(status.Code(err), err.Error())
-	case err := <-aC.SignalChan:
+	case err := <-b.SignalChan:
 		return nil, status.Error(status.Code(err), err.Error())
-	case <-aC.OkChan:
+	case <-b.OkChan:
 		resp = &pb.DeleteBlogResponse{BlogId: r.GetBlogId()}
 		return resp, nil
 	}
@@ -116,10 +124,12 @@ func (b *BlogSystem) UpdateBlog(ctx context.Context, r *pb.UpdateBlogRequest) (*
 	var blogItem *db.BlogItem
 
 	go func() {
+		b.UpdateMutex.RLock()
 		err := aC.MongoDB.MCollections["blogs"].Find(bson.M{"_id": bson.ObjectIdHex(r.GetBlog().GetId())}).One(&blogItem)
+		b.UpdateMutex.RUnlock()
 		if err != nil {
 			zerolog.Error().Msg(err.Error())
-			aC.SignalChan <- status.Error(codes.Unavailable, err.Error())
+			b.SignalChan <- status.Error(codes.Unavailable, err.Error())
 
 			return
 		}
@@ -129,26 +139,26 @@ func (b *BlogSystem) UpdateBlog(ctx context.Context, r *pb.UpdateBlogRequest) (*
 		blogItem.Content = r.GetBlog().GetContent()
 		blogItem.AuthorID = r.GetBlog().GetAuthorId()
 
-		aC.UpdateMutex.Lock()
+		b.UpdateMutex.Lock()
 		err = aC.MongoDB.MCollections["blogs"].UpdateId(bson.M{"_id": bson.ObjectIdHex(r.GetBlog().GetId())}, blogItem)
-		aC.UpdateMutex.Unlock()
+		b.UpdateMutex.Unlock()
 
 		if err != nil {
 			zerolog.Error().Msg(err.Error())
-			aC.SignalChan <- status.Error(codes.Internal, err.Error())
+			b.SignalChan <- status.Error(codes.Internal, err.Error())
 			return
 		}
 
-		aC.OkChan <- true
+		b.OkChan <- true
 	}()
 
 	select {
 	case <-ctx.Done():
 		err := ctx.Err()
 		return nil, status.Error(status.Code(err), err.Error())
-	case err := <-aC.SignalChan:
+	case err := <-b.SignalChan:
 		return nil, status.Error(status.Code(err), err.Error())
-	case <-aC.OkChan:
+	case <-b.OkChan:
 		respBlog = &pb.UpdateBlogResponse{Blog: &pb.Blog{
 			Id:       blogItem.ID.Hex(),
 			AuthorId: blogItem.AuthorID,
@@ -165,10 +175,12 @@ func (b *BlogSystem) ReadBlog(ctx context.Context, r *pb.ReadBlogRequest) (*pb.R
 	var blogItem *db.BlogItem
 
 	go func() {
+		b.DeleteMutex.RLock()
 		err := aC.MongoDB.MCollections["blogs"].Find(bson.M{"_id": bson.ObjectIdHex(r.GetBlogId())}).One(&blogItem)
+		b.DeleteMutex.RUnlock()
 		if err != nil {
 			zerolog.Error().Msg(err.Error())
-			aC.SignalChan <- status.Error(codes.Unavailable, err.Error())
+			b.SignalChan <- status.Error(codes.Unavailable, err.Error())
 
 			return
 		}
@@ -179,7 +191,7 @@ func (b *BlogSystem) ReadBlog(ctx context.Context, r *pb.ReadBlogRequest) (*pb.R
 			Content:  blogItem.Content,
 		}}
 
-		aC.OkChan <- true
+		b.OkChan <- true
 		return
 	}()
 
@@ -187,9 +199,9 @@ func (b *BlogSystem) ReadBlog(ctx context.Context, r *pb.ReadBlogRequest) (*pb.R
 	case <-ctx.Done():
 		err := ctx.Err()
 		return nil, status.Error(status.Code(err), err.Error())
-	case err := <-aC.SignalChan:
+	case err := <-b.SignalChan:
 		return nil, status.Error(status.Code(err), err.Error())
-	case <-aC.OkChan:
+	case <-b.OkChan:
 		return respBlog, nil
 	}
 }
@@ -210,7 +222,7 @@ func (b *BlogSystem) CreateBlog(ctx context.Context, r *pb.CreateBlogRequest) (*
 		err := aC.MongoDB.MCollections["blogs"].Insert(blog)
 		if err != nil {
 			zerolog.Error().Msg(err.Error())
-			aC.SignalChan <- status.Error(codes.Internal, err.Error())
+			b.SignalChan <- status.Error(codes.Internal, err.Error())
 
 			return
 		}
@@ -222,7 +234,7 @@ func (b *BlogSystem) CreateBlog(ctx context.Context, r *pb.CreateBlogRequest) (*
 			Content:  blog.Content,
 		}}
 
-		aC.OkChan <- true
+		b.OkChan <- true
 
 		return
 	}()
@@ -231,9 +243,9 @@ func (b *BlogSystem) CreateBlog(ctx context.Context, r *pb.CreateBlogRequest) (*
 	case <-ctx.Done():
 		err := ctx.Err()
 		return nil, status.Error(status.Code(err), err.Error())
-	case err := <-aC.SignalChan:
+	case err := <-b.SignalChan:
 		return nil, err
-	case <-aC.OkChan:
+	case <-b.OkChan:
 		return respBlog, nil
 	}
 }

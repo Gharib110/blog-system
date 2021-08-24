@@ -15,10 +15,6 @@ import (
 // Config use for holding the gRPC server configuration objects
 type Config struct {
 	MongoDB     *db.MDatabase
-	SignalChan  chan error
-	OkChan      chan bool
-	UpdateMutex *sync.Mutex
-	DeleteMutex *sync.Mutex
 }
 
 var aC *Config
@@ -52,7 +48,12 @@ func runServer() error {
 	srv := grpc.NewServer()
 	defer srv.Stop()
 
-	pb.RegisterBlogSystemServer(srv, &BlogSystem{})
+	pb.RegisterBlogSystemServer(srv, &BlogSystem{
+		SignalChan:  make(chan error),
+		OkChan:      make(chan bool),
+		UpdateMutex: &sync.RWMutex{},
+		DeleteMutex: &sync.RWMutex{},
+	})
 	pb.RegisterAuthorSystemServer(srv, &AuthorSystem{})
 
 	aC = &Config{
@@ -61,10 +62,6 @@ func runServer() error {
 			Mdb:          nil,
 			MCollections: make(map[string]*mgo.Collection),
 		},
-		SignalChan:  make(chan error, 10),
-		UpdateMutex: &sync.Mutex{},
-		OkChan:      make(chan bool, 10),
-		DeleteMutex: &sync.Mutex{},
 	}
 
 	aC.MongoDB.MSession, err = db.NewSession("localhost:27017")

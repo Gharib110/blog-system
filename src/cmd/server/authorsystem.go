@@ -3,9 +3,15 @@ package main
 import (
 	"context"
 	"github.com/DapperBlondie/blog-system/src/service/pb"
+	"sync"
 )
 
-type AuthorSystem struct{}
+type AuthorSystem struct{
+	SignalChan  chan error
+	OkChan      chan bool
+	UpdateMutex *sync.RWMutex
+	DeleteMutex *sync.Mutex
+}
 
 func (as *AuthorSystem) CreateAuthor(ctx context.Context, r *pb.CreateAuthorRequest) (*pb.CreateAuthorResponse, error) {
 	panic("implement me")
