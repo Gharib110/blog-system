@@ -13,7 +13,7 @@ import (
 )
 
 // BlogSystem Holder of RPC methods for blogSystem service
-type BlogSystem struct{
+type BlogSystem struct {
 	SignalChan  chan error
 	OkChan      chan bool
 	UpdateMutex *sync.RWMutex
@@ -142,7 +142,6 @@ func (b *BlogSystem) UpdateBlog(ctx context.Context, r *pb.UpdateBlogRequest) (*
 		b.UpdateMutex.Lock()
 		err = aC.MongoDB.MCollections["blogs"].UpdateId(bson.M{"_id": bson.ObjectIdHex(r.GetBlog().GetId())}, blogItem)
 		b.UpdateMutex.Unlock()
-
 		if err != nil {
 			zerolog.Error().Msg(err.Error())
 			b.SignalChan <- status.Error(codes.Internal, err.Error())

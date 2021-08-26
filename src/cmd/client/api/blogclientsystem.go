@@ -111,5 +111,4 @@ func (cc *ClientConfig) GetAllBlogs(num uint32) ([]*pb.ListBlogResponse, error) 
 		}
 		lstBlogs = append(lstBlogs, blog)
 	}
-
 }
