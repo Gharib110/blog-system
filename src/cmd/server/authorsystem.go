@@ -141,7 +141,34 @@ func (as *AuthorSystem) UpdateAuthor(ctx context.Context, r *pb.UpdateAuthorRequ
 
 // DeleteAuthor use for deleting a pb.Author with its own bson.ObjectId
 func (as *AuthorSystem) DeleteAuthor(ctx context.Context, r *pb.DeleteAuthorRequest) (*pb.DeleteAuthorResponse, error) {
-	panic("implement me")
+	var deletedAuthor *pb.DeleteAuthorResponse
+
+	go func() {
+		as.DeleteMutex.Lock()
+		err := aC.MongoDB.MCollections["authors"].Remove(bson.M{"_id": bson.ObjectIdHex(r.AuthorId)})
+		as.DeleteMutex.Unlock()
+		if err != nil {
+			zerolog.Error().Msg(err.Error())
+			as.SignalChan <- status.Error(status.Code(err), err.Error())
+			return
+		}
+
+		as.OkChan <- true
+		return
+	}()
+
+	select {
+	case <-ctx.Done():
+		return nil, status.Error(status.Code(ctx.Err()), ctx.Err().Error())
+	case err := <-as.SignalChan:
+		zerolog.Error().Msg(err.Error())
+		return nil, status.Error(status.Code(err), err.Error())
+	case <-as.OkChan:
+		deletedAuthor = &pb.DeleteAuthorResponse{
+			AuthorId: r.GetAuthorId(),
+		}
+		return deletedAuthor, nil
+	}
 }
 
 // ListAuthor use for sending multiple pb.Author with server streaming API
